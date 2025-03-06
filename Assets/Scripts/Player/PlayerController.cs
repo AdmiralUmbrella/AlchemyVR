@@ -11,6 +11,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxGrabDistance = 5f;
     [SerializeField] LayerMask grabbableLayer;
 
+    [Header("Grab Movement")]
+    [SerializeField] float scrollSensitivity = 2f;
+    [SerializeField] float verticalMoveSpeed = 3f;
+    [SerializeField] Vector2 holdDistanceRange = new Vector2(1f, 5f);
+
+    [Header("Lanzamiento")]
+    [SerializeField] float throwForceMultiplier = 1.5f;
+
+    private Vector3 holdPosition;
+    private float currentHoldDistance;
+    private Vector3 originalHoldPosition;
+
     private Camera playerCamera;
     private CharacterController controller;
     private Grabbable currentGrabbed;
@@ -21,8 +33,21 @@ public class PlayerController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         playerCamera = GetComponentInChildren<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
-    }
+        originalHoldPosition = holdPoint.localPosition;
 
+        currentHoldDistance = Vector3.Distance(holdPoint.position, playerCamera.transform.position);
+        holdPosition = holdPoint.localPosition;
+    }
+    void ReleaseObject()
+    {
+        if (currentGrabbed != null)
+        {
+            currentGrabbed.Release();
+            currentGrabbed = null;
+        }
+        holdPoint.localPosition = originalHoldPosition; 
+        currentHoldDistance = originalHoldPosition.z; 
+    }
     void Update()
     {
         HandleMovement();
@@ -54,20 +79,53 @@ public class PlayerController : MonoBehaviour
 
     void HandleGrabInput()
     {
+        // Click para agarrar
         if (Input.GetMouseButtonDown(0))
         {
             TryGrabObject();
         }
 
+        // Movimiento mientras se agarra
+        if (currentGrabbed != null)
+        {
+            // Scroll para acercar/alejar
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            currentHoldDistance = Mathf.Clamp(
+                currentHoldDistance - scroll * scrollSensitivity,
+                holdDistanceRange.x,
+                holdDistanceRange.y
+            );
+
+            // Teclas para subir/bajar (Q/E)
+            float verticalInput = Input.GetKey(KeyCode.Q) ? -1 : Input.GetKey(KeyCode.E) ? 1 : 0;
+            holdPosition.y += verticalInput * verticalMoveSpeed * Time.deltaTime;
+
+            // Actualiza posición del holdPoint
+            holdPoint.localPosition = new Vector3(
+                0,
+                holdPosition.y,
+                currentHoldDistance
+            );
+
+            currentGrabbed.MoveTowards(holdPoint);
+        }
+
+        // Soltar objeto
         if (Input.GetMouseButtonUp(0) && currentGrabbed != null)
         {
+            currentGrabbed.SetHover(false);
             currentGrabbed.Release();
             currentGrabbed = null;
         }
 
-        if (currentGrabbed != null && currentGrabbed.IsGrabbed)
-        {
-            currentGrabbed.MoveTowards(holdPoint);
+        if (Input.GetMouseButtonDown(1))
+        { // Botón derecho
+            if (currentGrabbed != null)
+            {
+                Vector3 throwDirection = playerCamera.transform.forward;
+                currentGrabbed.Throw(throwDirection * throwForceMultiplier);
+                ReleaseObject();
+            }
         }
     }
 
