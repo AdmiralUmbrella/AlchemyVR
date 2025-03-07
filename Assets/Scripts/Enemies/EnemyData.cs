@@ -112,14 +112,20 @@ public class EnemyData
     [HideInInspector] public bool isDead = false;
 
     /*--------------------------------------------------------------------------------------------------------
-     * Aquí podríamos añadir Resistencias Elementales, etc.
+     * Resistencias Elementales
      *--------------------------------------------------------------------------------------------------------*/
-    // Ejemplo (opcionales):
-    /*
-    [Header("Elemental Resistances")]
+    [Header("Elemental Resistances\n(Valores negativos hacen vulnerables al enemigo al tipo de daño)")]
+    [Tooltip("Resistencia al Fuego (Pyro). Reduce el daño de ataques de fuego.")]
     public float pyroResistance = 0f;
+
+    [Tooltip("Resistencia al Agua (Aqua). Reduce el daño de ataques de agua.")]
     public float aquaResistance = 0f;
-    // ...
-    */
+
+    [Tooltip("Resistencia a la Tierra (Geo). Reduce el daño de ataques de tierra.")]
+    public float geoResistance = 0f;
+
+    [Tooltip("Resistencia al Aire (Aero). Reduce el daño de ataques de aire.")]
+    public float aeroResistance = 0f;
+
 
 }

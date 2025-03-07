@@ -143,17 +143,34 @@ public class EnemyStateManager : MonoBehaviour
     /// </summary>
     /// <param name="damage">Cantidad de daño a aplicar.</param>
     /// <param name="attackerPosition">Posición del atacante para calcular knockback.</param>
-    public void TakeDamage(int damage, Vector3 attackerPosition)
+    /// <param name="damageType">Tipo de daño que se le aplica al enemigo.</param>
+    public void TakeDamage(int damage, Vector3 attackerPosition, string damageType)
     {
         // Si el enemigo ya está muerto o aturdido, ignorar
         if (enemyData.isDead || enemyData.isStunned) return;
 
-        // Calcular la dirección del knockback
-        enemyData.knockbackDirection = (transform.position - attackerPosition).normalized;
+        // Modificar daño basado en la resistencia elemental
+        float finalDamage = damage;
 
-        // Aplicar daño
-        enemyData.currentHealth -= damage;
-        Debug.Log($"Enemigo recibió {damage} de daño. Vida actual: {enemyData.currentHealth}");
+        switch (damageType)
+        {
+            case "Pyro":
+                finalDamage *= (1f - enemyData.pyroResistance);
+                break;
+            case "Aqua":
+                finalDamage *= (1f - enemyData.aquaResistance);
+                break;
+            case "Geo":
+                finalDamage *= (1f - enemyData.geoResistance);
+                break;
+            case "Aero":
+                finalDamage *= (1f - enemyData.aeroResistance);
+                break;
+        }
+
+        // Aplicar el daño final
+        enemyData.currentHealth -= Mathf.RoundToInt(finalDamage);
+        Debug.Log($"Enemigo recibió {finalDamage} de daño {damageType}. Vida actual: {enemyData.currentHealth}");
 
         // Verificar muerte
         if (enemyData.currentHealth <= 0)
@@ -162,11 +179,10 @@ public class EnemyStateManager : MonoBehaviour
         }
         else if (enemyData.canBeStunned)
         {
-            // Si puede ser aturdido, cambiar al estado Hit
             ChangeState(HitState);
         }
-        // Si no puede ser aturdido, podrías quedarte en el estado actual
     }
+
 
     /// <summary>
     /// Lógica para matar al enemigo.
