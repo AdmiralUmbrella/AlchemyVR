@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5901d35139afb46a6c0d30484ba1c2, type: 3}
   m_Name: Voltaris
   m_EditorClassIdentifier: 
-  essenceName: 
-  essenceColor: {r: 0.49411768, g: 0.41176474, b: 0.627451, a: 1}
+  essenceName: Voltaris
+  essenceColor: {r: 1, g: 0.96222484, b: 0, a: 1}
   baseDamage: 10
   roundFlaskEffect: {fileID: 0}
   squareFlaskEffect: {fileID: 0}
