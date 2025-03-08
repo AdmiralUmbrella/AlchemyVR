@@ -33,7 +33,6 @@ public class Flask : MonoBehaviour
     {
         if (currentEssence == null)
         {
-            Explode();
             return;
         }
 
@@ -45,10 +44,5 @@ public class Flask : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void Explode()
-    {
-        // Ejemplo: Daño en área + partículas
-        Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-        Destroy(gameObject);
-    }
+
 }

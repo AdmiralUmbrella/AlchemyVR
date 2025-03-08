@@ -12,11 +12,10 @@ public class Cauldron : MonoBehaviour
     [Header("Effects")]
     [SerializeField] private ParticleSystem successEffect;
     [SerializeField] private ParticleSystem explosionEffect;
+    [SerializeField] private Transform particlesSpawnPoint;
 
     [Header("Mix Settings")]
     [SerializeField] private float mixDelay = 3f;
-    [SerializeField] private Transform flaskSpawnPoint;
-    [SerializeField] private GameObject flaskPrefab;
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
@@ -24,19 +23,31 @@ public class Cauldron : MonoBehaviour
     private List<EssenceSO> currentMix = new List<EssenceSO>();
     private Coroutine currentMixRoutine;
     private float currentTimer;
+    private EssenceSO resultingPotion; // Nueva variable para almacenar la poción exitosa
 
     private void OnTriggerEnter(Collider other)
     {
+        // Manejar esencias
         DraggableEssence essence = other.GetComponent<DraggableEssence>();
         if (essence != null)
         {
             AddEssence(essence.essenceData);
             Destroy(essence.gameObject);
+            return;
+        }
+
+        // Manejar frascos vacíos
+        Flask flask = other.GetComponent<Flask>();
+        if (flask != null && resultingPotion != null)
+        {
+            TransferPotionToFlask(flask);
         }
     }
 
     private void AddEssence(EssenceSO essence)
     {
+        if (resultingPotion != null) return; // Ignorar si ya hay una poción lista
+
         if (currentMix.Count >= 3) return;
 
         currentMix.Add(essence);
@@ -64,8 +75,9 @@ public class Cauldron : MonoBehaviour
 
     private void UpdateLiquidColor()
     {
-        Color mixColor = currentMix.Count > 0 ? CalculateMixColor() : defaultColor;
-        liquidRenderer.material.color = mixColor;
+        liquidRenderer.material.color = resultingPotion != null ?
+            resultingPotion.essenceColor :
+            (currentMix.Count > 0 ? CalculateMixColor() : defaultColor);
     }
 
     private Color CalculateMixColor()
@@ -80,34 +92,52 @@ public class Cauldron : MonoBehaviour
     {
         bool validRecipeFound = false;
 
-        // Cargar todas las recetas desde Resources/Recipes
-        foreach (PotionRecipeSO recipe in Resources.LoadAll<PotionRecipeSO>("Recipes"))
+        // Primero verificar si es una poción de un solo elemento
+        if (currentMix.Count == 1)
         {
-            if (IsRecipeValid(recipe.requiredEssences))
+            resultingPotion = currentMix[0]; // Usar el elemento directamente
+            PlayEffect(successEffect);
+            validRecipeFound = true;
+        }
+        else // Luego verificar recetas complejas
+        {
+            foreach (PotionRecipeSO recipe in Resources.LoadAll<PotionRecipeSO>("Recipes"))
             {
-                successEffect.Play();
-                CreateFlask(recipe.resultingPotion);
-                validRecipeFound = true;
-                break;
+                if (IsRecipeValid(recipe.requiredEssences))
+                {
+                    resultingPotion = recipe.resultingPotion;
+                    PlayEffect(successEffect);
+                    validRecipeFound = true;
+                    break;
+                }
             }
         }
 
         if (!validRecipeFound)
         {
+            // Solo explotar si hay 2+ elementos y no es válido
             if (currentMix.Count >= 2)
             {
-                explosionEffect.Play();
+                PlayEffect(explosionEffect);
                 ResetCauldron();
             }
         }
     }
 
-    private void CreateFlask(EssenceSO potion)
+    private void TransferPotionToFlask(Flask flask)
     {
-        GameObject newFlask = Instantiate(flaskPrefab, flaskSpawnPoint.position, Quaternion.identity);
-        Flask flaskComponent = newFlask.GetComponent<Flask>();
-        flaskComponent.InitializeFlask(potion);
+        if (resultingPotion == null) return;
+
+        flask.InitializeFlask(resultingPotion);
         ResetCauldron();
+    }
+
+    private void PlayEffect(ParticleSystem effect)
+    {
+        if (effect != null && particlesSpawnPoint != null)
+        {
+            Instantiate(effect, particlesSpawnPoint.position, particlesSpawnPoint.rotation);
+        }
     }
 
     private bool IsRecipeValid(EssenceSO[] required)
@@ -121,6 +151,7 @@ public class Cauldron : MonoBehaviour
     private void ResetCauldron()
     {
         currentMix.Clear();
+        resultingPotion = null;
         UpdateLiquidColor();
     }
 }

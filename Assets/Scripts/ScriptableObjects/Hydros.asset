@@ -15,5 +15,5 @@ MonoBehaviour:
   essenceName: Hydros
   essenceColor: {r: 0.34901962, g: 0.5882353, b: 0.6431373, a: 1}
   baseDamage: 10
-  roundFlaskEffect: {fileID: 0}
+  roundFlaskEffect: {fileID: 8205706795460263314, guid: 326e86d5729c54e479798cacab220bb2, type: 3}
   squareFlaskEffect: {fileID: 0}
