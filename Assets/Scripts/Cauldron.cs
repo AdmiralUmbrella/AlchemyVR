@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Cauldron : MonoBehaviour
 {
@@ -11,7 +13,17 @@ public class Cauldron : MonoBehaviour
     [SerializeField] private ParticleSystem successEffect;
     [SerializeField] private ParticleSystem explosionEffect;
 
+    [Header("Mix Settings")]
+    [SerializeField] private float mixDelay = 3f;
+    [SerializeField] private Transform flaskSpawnPoint;
+    [SerializeField] private GameObject flaskPrefab;
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI timerText;
+
     private List<EssenceSO> currentMix = new List<EssenceSO>();
+    private Coroutine currentMixRoutine;
+    private float currentTimer;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,7 +31,7 @@ public class Cauldron : MonoBehaviour
         if (essence != null)
         {
             AddEssence(essence.essenceData);
-            Destroy(essence.gameObject); // Destruye la esencia física
+            Destroy(essence.gameObject);
         }
     }
 
@@ -27,9 +39,26 @@ public class Cauldron : MonoBehaviour
     {
         if (currentMix.Count >= 3) return;
 
-        Debug.Log(essence.essenceName);
         currentMix.Add(essence);
         UpdateLiquidColor();
+
+        if (currentMixRoutine != null) StopCoroutine(currentMixRoutine);
+        currentMixRoutine = StartCoroutine(MixIngredients());
+    }
+
+    private IEnumerator MixIngredients()
+    {
+        currentTimer = mixDelay;
+        timerText.gameObject.SetActive(true);
+
+        while (currentTimer > 0)
+        {
+            timerText.text = Mathf.CeilToInt(currentTimer).ToString();
+            currentTimer -= Time.deltaTime;
+            yield return null;
+        }
+
+        timerText.gameObject.SetActive(false);
         CheckForValidRecipe();
     }
 
@@ -49,23 +78,36 @@ public class Cauldron : MonoBehaviour
 
     private void CheckForValidRecipe()
     {
+        bool validRecipeFound = false;
+
+        // Cargar todas las recetas desde Resources/Recipes
         foreach (PotionRecipeSO recipe in Resources.LoadAll<PotionRecipeSO>("Recipes"))
         {
             if (IsRecipeValid(recipe.requiredEssences))
             {
                 successEffect.Play();
-                Debug.Log(recipe.resultingPotion);
-                // Aquí puedes generar la poción resultante si lo deseas
-                ResetCauldron();
-                return;
+                CreateFlask(recipe.resultingPotion);
+                validRecipeFound = true;
+                break;
             }
         }
 
-        if (currentMix.Count >= 3)
+        if (!validRecipeFound)
         {
-            explosionEffect.Play();
-            ResetCauldron();
+            if (currentMix.Count >= 2)
+            {
+                explosionEffect.Play();
+                ResetCauldron();
+            }
         }
+    }
+
+    private void CreateFlask(EssenceSO potion)
+    {
+        GameObject newFlask = Instantiate(flaskPrefab, flaskSpawnPoint.position, Quaternion.identity);
+        Flask flaskComponent = newFlask.GetComponent<Flask>();
+        flaskComponent.InitializeFlask(potion);
+        ResetCauldron();
     }
 
     private bool IsRecipeValid(EssenceSO[] required)
@@ -76,5 +118,9 @@ public class Cauldron : MonoBehaviour
         return true;
     }
 
-    private void ResetCauldron() => currentMix.Clear();
+    private void ResetCauldron()
+    {
+        currentMix.Clear();
+        UpdateLiquidColor();
+    }
 }

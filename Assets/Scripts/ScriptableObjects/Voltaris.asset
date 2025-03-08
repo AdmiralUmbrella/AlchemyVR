@@ -15,5 +15,5 @@ MonoBehaviour:
   essenceName: Voltaris
   essenceColor: {r: 1, g: 0.96222484, b: 0, a: 1}
   baseDamage: 10
-  roundFlaskEffect: {fileID: 0}
+  roundFlaskEffect: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
   squareFlaskEffect: {fileID: 0}
