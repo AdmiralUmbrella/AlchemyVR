@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Frostium
   m_EditorClassIdentifier: 
   essenceName: Frostium
-  essenceColor: {r: 0.8196079, g: 0.98823535, b: 0.9490197, a: 1}
+  essenceColor: {r: 0.5686275, g: 0.7254902, b: 0.7254902, a: 1}
   baseDamage: 10
   roundFlaskEffect: {fileID: 0}
   squareFlaskEffect: {fileID: 0}
