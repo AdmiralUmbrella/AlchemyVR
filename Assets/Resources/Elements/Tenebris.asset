@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5901d35139afb46a6c0d30484ba1c2, type: 3}
   m_Name: Tenebris
   m_EditorClassIdentifier: 
-  essenceName: 
-  essenceColor: {r: 1, g: 1, b: 1, a: 1}
+  essenceName: Tenebris
+  essenceColor: {r: 0.33333334, g: 0.16470589, b: 0.11764707, a: 1}
   baseDamage: 10
   roundFlaskEffect: {fileID: 0}
   squareFlaskEffect: {fileID: 0}

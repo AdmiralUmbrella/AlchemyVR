@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d5901d35139afb46a6c0d30484ba1c2, type: 3}
-  m_Name: Hermora
+  m_Name: Hemora
   m_EditorClassIdentifier: 
-  essenceName: 
+  essenceName: Hemora
   essenceColor: {r: 0.5803922, g: 0, b: 0.1137255, a: 1}
   baseDamage: 10
   roundFlaskEffect: {fileID: 0}

@@ -97,6 +97,7 @@ public class Cauldron : MonoBehaviour
         {
             resultingPotion = currentMix[0]; // Usar el elemento directamente
             PlayEffect(successEffect);
+            Debug.Log(resultingPotion.essenceName);
             validRecipeFound = true;
         }
         else // Luego verificar recetas complejas
@@ -107,6 +108,7 @@ public class Cauldron : MonoBehaviour
                 {
                     resultingPotion = recipe.resultingPotion;
                     PlayEffect(successEffect);
+                    Debug.Log(resultingPotion.essenceName);
                     validRecipeFound = true;
                     break;
                 }

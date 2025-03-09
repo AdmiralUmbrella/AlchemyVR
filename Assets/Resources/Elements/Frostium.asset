@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d5901d35139afb46a6c0d30484ba1c2, type: 3}
   m_Name: Frostium
   m_EditorClassIdentifier: 
-  essenceName: 
+  essenceName: Frostium
   essenceColor: {r: 0.8196079, g: 0.98823535, b: 0.9490197, a: 1}
   baseDamage: 10
   roundFlaskEffect: {fileID: 0}
