@@ -15,7 +15,6 @@ public class EnemyData
     [Tooltip("Vida máxima del enemigo.")]
     public int maxHealth = 100;
 
-    [HideInInspector]
     public int currentHealth;
 
     [Tooltip("Rango de detección para iniciar la persecución.")]

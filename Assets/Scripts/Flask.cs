@@ -36,6 +36,11 @@ public class Flask : MonoBehaviour
             return;
         }
 
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+
+        }
+
         GameObject effectPrefab = isRoundFlask ?
             currentEssence.roundFlaskEffect :
             currentEssence.squareFlaskEffect;

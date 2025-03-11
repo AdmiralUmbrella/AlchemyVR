@@ -11,9 +11,7 @@ public class EnemyStateManager : MonoBehaviour
     public delegate void EnemyDeathHandler();
     public event EnemyDeathHandler OnEnemyDeath;
 
-    // En este proyecto, podemos usar [SerializeField] para asignar o comprobar en Inspector.
-    [SerializeField]
-    private EnemyData enemyData;
+    public EnemyData enemyData;
 
     // Referencia al estado actual
     private EnemyBaseState currentState;
