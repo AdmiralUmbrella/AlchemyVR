@@ -11,4 +11,5 @@ public class EssenceSO : ScriptableObject
     [Header("Flask Effects")]
     public GameObject roundFlaskEffect;  // Prefab para frasco redondo (ej: explosión)
     public GameObject squareFlaskEffect; // Prefab para frasco cuadrado (ej: zona persistente)
+
 }
