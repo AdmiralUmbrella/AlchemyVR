@@ -9,10 +9,12 @@ public class Cauldron : MonoBehaviour
     [SerializeField] private Renderer liquidRenderer;
     [SerializeField] private Color defaultColor = Color.gray;
 
+
     [Header("Effects")]
     [SerializeField] private ParticleSystem successEffect;
     [SerializeField] private ParticleSystem explosionEffect;
     [SerializeField] private Transform particlesSpawnPoint;
+
 
     [Header("Mix Settings")]
     [SerializeField] private float mixDelay = 3f;
@@ -20,10 +22,15 @@ public class Cauldron : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI timerText;
 
+    private Material liquidMaterial;
+    [SerializeField] private float colorTransitionSpeed = 2f;
+    private bool hasValidPotion = false;
+
     private List<EssenceSO> currentMix = new List<EssenceSO>();
     private Coroutine currentMixRoutine;
     private float currentTimer;
     private EssenceSO resultingPotion; // Nueva variable para almacenar la poción exitosa
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -75,9 +82,11 @@ public class Cauldron : MonoBehaviour
 
     private void UpdateLiquidColor()
     {
+
         liquidRenderer.material.color = resultingPotion != null ?
             resultingPotion.essenceColor :
             (currentMix.Count > 0 ? CalculateMixColor() : defaultColor);
+        
     }
 
     private Color CalculateMixColor()
@@ -114,7 +123,13 @@ public class Cauldron : MonoBehaviour
                 }
             }
         }
-
+        if (validRecipeFound)
+        {
+            hasValidPotion = true;
+            liquidMaterial.SetColor("_PotionColor", resultingPotion.essenceColor);
+            liquidMaterial.SetColor("_BaseColor", CalculateMixColor());
+            liquidMaterial.SetFloat("_ColorBlend", 0f); // Reiniciar transición
+        }
         if (!validRecipeFound)
         {
             // Solo explotar si hay 2+ elementos y no es válido
@@ -124,6 +139,7 @@ public class Cauldron : MonoBehaviour
                 ResetCauldron();
             }
         }
+
     }
 
     private void TransferPotionToFlask(Flask flask)
@@ -152,6 +168,7 @@ public class Cauldron : MonoBehaviour
 
     private void ResetCauldron()
     {
+        hasValidPotion = false;
         currentMix.Clear();
         resultingPotion = null;
         UpdateLiquidColor();
