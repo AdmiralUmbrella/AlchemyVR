@@ -15,5 +15,7 @@ MonoBehaviour:
   essenceName: Ventus
   essenceColor: {r: 0.68235296, g: 0.8588236, b: 0.74509805, a: 1}
   baseDamage: 10
+  effectsToApply:
+  - {fileID: 11400000, guid: 2a2ce7252808b2844badd59639f27744, type: 2}
   roundFlaskEffect: {fileID: 0}
   squareFlaskEffect: {fileID: 0}

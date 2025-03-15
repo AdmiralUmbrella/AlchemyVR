@@ -15,5 +15,7 @@ MonoBehaviour:
   essenceName: Pyro
   essenceColor: {r: 0.8431373, g: 0.45882356, b: 0.12941177, a: 1}
   baseDamage: 30
+  effectsToApply:
+  - {fileID: 11400000, guid: f2bca64f4aae1bb409f262c361d531b1, type: 2}
   roundFlaskEffect: {fileID: 6294508013172393196, guid: 043176b6a68be2b43b073aaaa4782c7d, type: 3}
   squareFlaskEffect: {fileID: 0}
