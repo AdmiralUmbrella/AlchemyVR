@@ -15,7 +15,6 @@ public class EnemyStateManager : MonoBehaviour
     public EnemyAttackState AttackState { get; private set; }
     public EnemyHitState HitState { get; private set; }
     public EnemyDeadState DeadState { get; private set; }
-    public EnemySummonState SummonState { get; private set; }
 
     private void Awake()
     {
@@ -26,7 +25,6 @@ public class EnemyStateManager : MonoBehaviour
         AttackState = new EnemyAttackState(this, enemyData);
         HitState = new EnemyHitState(this, enemyData);
         DeadState = new EnemyDeadState(this, enemyData);
-        SummonState = new EnemySummonState(this, (SummonerData)enemyData);
 
         enemyData.currentHealth = enemyData.maxHealth;
     }
