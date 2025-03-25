@@ -52,7 +52,7 @@ MonoBehaviour:
   enemyData:
     maxHealth: 100
     currentHealth: 0
-    detectionRange: 10
+    detectionRange: 30
     attackRange: 2
     moveSpeed: 3.5
     playerTransform: {fileID: 0}
@@ -61,7 +61,7 @@ MonoBehaviour:
     modelRoot: {fileID: 0}
     pathUpdateInterval: 0.2
     idleCheckInterval: 0.5
-    stopChaseDistance: 15
+    stopChaseDistance: 35
     isAttacking: 0
     attackDamage: 10
     attackDuration: 1

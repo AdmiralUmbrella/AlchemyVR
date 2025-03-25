@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 438435159}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Tower
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,8 +269,8 @@ Transform:
   m_GameObject: {fileID: 438435153}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.8, y: 2.5172, z: 0.02}
-  m_LocalScale: {x: 4.4336, y: 6.4270663, z: 4.085051}
+  m_LocalPosition: {x: -15.22, y: 1.41, z: -0.54}
+  m_LocalScale: {x: 2.121522, y: 3.0754154, z: 1.9547378}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -878,9 +878,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin (Player)
       objectReference: {fileID: 0}
+    - target: {fileID: 4966482955912973152, guid: 01ee1cc702c74e5419eeb51578fdfdbc, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 5796286561078866120, guid: 01ee1cc702c74e5419eeb51578fdfdbc, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -11.51
       objectReference: {fileID: 0}
     - target: {fileID: 5796286561078866120, guid: 01ee1cc702c74e5419eeb51578fdfdbc, type: 3}
       propertyPath: m_LocalPosition.y
@@ -888,7 +892,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5796286561078866120, guid: 01ee1cc702c74e5419eeb51578fdfdbc, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -6.98
       objectReference: {fileID: 0}
     - target: {fileID: 5796286561078866120, guid: 01ee1cc702c74e5419eeb51578fdfdbc, type: 3}
       propertyPath: m_LocalRotation.w

@@ -1,107 +1,66 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// Esta clase gestiona la FSM del enemigo.
-/// Aquí creamos las instancias de cada estado y controlamos el flujo entre ellos.
-/// </summary>
 public class EnemyStateManager : MonoBehaviour
 {
-    // Evento opcional para notificar muerte del enemigo a otros sistemas.
     public delegate void EnemyDeathHandler();
     public event EnemyDeathHandler OnEnemyDeath;
 
     public EnemyData enemyData;
 
-    // Referencia al estado actual
     private EnemyBaseState currentState;
 
-    // Referencias a los estados concretos
-    // (Los instanciamos en Awake para que estén listos antes de Start)
     public EnemyIdleState IdleState { get; private set; }
     public EnemyChaseState ChaseState { get; private set; }
     public EnemyAttackState AttackState { get; private set; }
     public EnemyHitState HitState { get; private set; }
     public EnemyDeadState DeadState { get; private set; }
+    public EnemySummonState SummonState { get; private set; }
 
     private void Awake()
     {
-        // Configurar componentes necesarios (NavMeshAgent, Animator, etc.)
         SetupComponents();
 
-        // Crear instancias de los estados concretos, pasándoles 'this' y 'enemyData'
         IdleState = new EnemyIdleState(this, enemyData);
         ChaseState = new EnemyChaseState(this, enemyData);
         AttackState = new EnemyAttackState(this, enemyData);
         HitState = new EnemyHitState(this, enemyData);
         DeadState = new EnemyDeadState(this, enemyData);
+        SummonState = new EnemySummonState(this, (SummonerData)enemyData);
 
-        // Inicializar la salud actual
         enemyData.currentHealth = enemyData.maxHealth;
-    }
-
-    /// <summary>
-    /// Aquí configuramos todos los componentes que el enemigo necesita,
-    /// por ejemplo NavMeshAgent o Animator, en caso de no estar asignados.
-    /// </summary>
-    private void SetupComponents()
-    {
-        // Obtener el NavMeshAgent
-        enemyData.agent = GetComponent<NavMeshAgent>();
-        if (enemyData.agent != null)
-        {
-            enemyData.agent.speed = enemyData.moveSpeed;
-            enemyData.agent.stoppingDistance = enemyData.attackRange;
-        }
-
-        // Configurar el animator si no está asignado en el Inspector
-        if (enemyData.animator == null && enemyData.modelRoot != null)
-        {
-            enemyData.animator = enemyData.modelRoot.GetComponent<Animator>();
-        }
     }
 
     private void Start()
     {
-        // Buscar al "jugador" o a la "torre" que el enemigo atacará
-        // (Puede ser un GameObject con tag "Player" o "Tower", según tu diseño)
+        // Buscamos solo una vez al Player, como antes.
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             enemyData.playerTransform = player.transform;
         }
 
-        // Iniciar la FSM en estado Idle
+        // Iniciar en Idle
         ChangeState(IdleState);
     }
 
     private void Update()
     {
-        // Actualizar el cooldown del ataque, si el enemigo no está muerto
         if (enemyData.attackCooldownTimer > 0 && !enemyData.isDead)
         {
             enemyData.attackCooldownTimer -= Time.deltaTime;
         }
 
-        // Actualizar el estado actual
         currentState?.Update();
     }
 
-    /// <summary>
-    /// Cambia el estado actual de la FSM.
-    /// Llama el Exit() del estado anterior y el Enter() del nuevo estado.
-    /// </summary>
-    /// <param name="newState">El nuevo estado al que transicionamos.</param>
     public void ChangeState(EnemyBaseState newState)
     {
-        currentState?.Exit();    // Salimos del estado anterior
-        currentState = newState; // Actualizamos la referencia
-        currentState?.Enter();   // Entramos al nuevo estado
+        currentState?.Exit();
+        currentState = newState;
+        currentState?.Enter();
     }
 
-    /// <summary>
-    /// Detener el NavMeshAgent para que el enemigo no se mueva (ej. al atacar).
-    /// </summary>
     public void StopAgent()
     {
         if (enemyData.agent != null)
@@ -111,9 +70,6 @@ public class EnemyStateManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Reanudar el movimiento del NavMeshAgent.
-    /// </summary>
     public void ResumeAgent()
     {
         if (enemyData.agent != null)
@@ -123,31 +79,81 @@ public class EnemyStateManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Verifica si el jugador/tower está dentro de un rango específico.
+    /// Método que busca primero una torre en el rango especificado.
+    /// Si hay al menos una, la devuelve como Transform.
+    /// Si no encuentra ninguna, revisa si el Player está en ese rango y devuelve el Transform del Player.
+    /// Si tampoco hay Player cerca, retorna null.
     /// </summary>
-    public bool IsPlayerInRange(float range)
+    public Transform GetPriorityTarget(float range)
     {
-        if (enemyData.playerTransform == null) return false;
+        // 1) Buscamos TODAS las torres en la escena con la etiqueta "Tower".
+        GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
 
-        float distance = Vector3.Distance(
-            transform.position,
-            enemyData.playerTransform.position
-        );
-        return (distance <= range);
+        Transform nearestTower = null;
+        float nearestDistance = Mathf.Infinity;
+        Vector3 myPosition = transform.position;
+
+        // 2) Recorremos todas las torres para ver si alguna está dentro del rango y es la más cercana.
+        foreach (GameObject tower in towers)
+        {
+            float distanceToTower = Vector3.Distance(myPosition, tower.transform.position);
+            if (distanceToTower <= range && distanceToTower < nearestDistance)
+            {
+                nearestDistance = distanceToTower;
+                nearestTower = tower.transform;
+            }
+        }
+
+        // 3) Si encontramos torre en rango, la retornamos (prioridad total).
+        if (nearestTower != null)
+        {
+            return nearestTower;
+        }
+
+        // 4) Si no hay torre, comprobamos si el Player está en rango:
+        if (enemyData.playerTransform != null)
+        {
+            float distanceToPlayer = Vector3.Distance(myPosition, enemyData.playerTransform.position);
+            if (distanceToPlayer <= range)
+            {
+                return enemyData.playerTransform;
+            }
+        }
+
+        // 5) Si no hay torre ni Player en rango, retornamos null.
+        return null;
     }
 
     /// <summary>
-    /// Método que recibe daño desde otras partes (pociones, armas, etc.).
+    /// Para verificar si hay algún objetivo prioritario (Tower o, si no, Player) en un rango dado.
+    /// Devuelve true/false según corresponda y, si lo hay, asigna ese Transform a enemyData.playerTransform.
     /// </summary>
-    /// <param name="damage">Cantidad de daño a aplicar.</param>
-    /// <param name="attackerPosition">Posición del atacante para calcular knockback.</param>
-    /// <param name="damageType">Tipo de daño que se le aplica al enemigo.</param>
+    public bool CheckForTargetsInRange(float range)
+    {
+        // 1) Usamos el nuevo método que decide a quién perseguir
+        Transform target = GetPriorityTarget(range);
+
+        // 2) Si es distinto de null, es que hay algo en rango
+        if (target != null)
+        {
+            enemyData.playerTransform = target;
+            return true;
+        }
+        return false;
+    }
+
+    public bool IsPlayerInRange(float range)
+    {
+        // (Opcional) Podrías dejar este método como estaba,
+        // o hacerlo que internamente llame a CheckForTargetsInRange.
+        // Ejemplo:
+        return CheckForTargetsInRange(range);
+    }
+
     public void TakeDamage(int damage, Vector3 attackerPosition, string damageType)
     {
-        // Si el enemigo ya está muerto o aturdido, ignorar
         if (enemyData.isDead || enemyData.isStunned) return;
 
-        // Modificar daño basado en la resistencia elemental
         float finalDamage = damage;
 
         switch (damageType)
@@ -166,11 +172,9 @@ public class EnemyStateManager : MonoBehaviour
                 break;
         }
 
-        // Aplicar el daño final
         enemyData.currentHealth -= Mathf.RoundToInt(finalDamage);
         Debug.Log($"Enemigo recibió {finalDamage} de daño {damageType}. Vida actual: {enemyData.currentHealth}");
 
-        // Verificar muerte
         if (enemyData.currentHealth <= 0)
         {
             Die();
@@ -181,34 +185,40 @@ public class EnemyStateManager : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// Lógica para matar al enemigo.
-    /// Emite el evento OnEnemyDeath e inicia el estado Dead.
-    /// </summary>
     public void Die()
     {
         if (!enemyData.isDead)
         {
-            OnEnemyDeath?.Invoke();  // Notificar a otros sistemas
+            OnEnemyDeath?.Invoke();
             ChangeState(DeadState);
         }
     }
 
-    // Dibujar esferas en la escena para visualizar rangos. Opcional.
+    private void SetupComponents()
+    {
+        enemyData.agent = GetComponent<NavMeshAgent>();
+        if (enemyData.agent != null)
+        {
+            enemyData.agent.speed = enemyData.moveSpeed;
+            enemyData.agent.stoppingDistance = enemyData.attackRange;
+        }
+
+        if (enemyData.animator == null && enemyData.modelRoot != null)
+        {
+            enemyData.animator = enemyData.modelRoot.GetComponent<Animator>();
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (enemyData == null) return;
 
-        // Rango de detección
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, enemyData.detectionRange);
 
-        // Rango de ataque
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, enemyData.attackRange);
 
-        // Rango de parada de persecución
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, enemyData.stopChaseDistance);
     }
