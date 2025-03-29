@@ -1,85 +1,98 @@
 using UnityEngine;
-using System.Collections.Generic;
 
-public class SummonerSummonState : EnemyBaseState
+/// <summary>
+/// Estado donde el Summoner "ataca" invocando enemigos,
+/// igual que un AttackState en Enemy, pero sin daño físico.
+/// </summary>
+public class SummonerSummonState : SummonerBaseState
 {
-    private SummonerData summonerData;
-    private float summonTimer;
-    private List<GameObject> summonedEnemies;
+    private float animationDuration = 2f; // Duración de la anim de invocación
+    private float currentTime;
+    private bool hasInvokedThisCycle;
 
-    public SummonerSummonState(EnemyStateManager manager, SummonerData summonerData)
-        : base(manager, summonerData)
-    {
-        this.summonerData = summonerData;
-        summonedEnemies = new List<GameObject>();
-        summonTimer = summonerData.summonInterval;
-    }
+    public SummonerSummonState(SummonerStateManager manager, SummonerData data)
+        : base(manager, data) { }
 
     public override void Enter()
     {
-        Debug.Log("Summoner entró en estado: SUMMON");
+        Debug.Log("Summoner entró en estado: SUMMON (Invocación)");
+
         manager.StopAgent();
-        summonTimer = 0f; // Invocación inmediata al entrar al estado
+
+        currentTime = animationDuration;
+        hasInvokedThisCycle = false;
 
         if (summonerData.animator != null)
+        {
+            // Usamos "Attack" como trigger, para parecerse a EnemyAttackState
             summonerData.animator.SetTrigger("Summon");
+        }
     }
-
-
 
     public override void Update()
     {
-        summonTimer -= Time.deltaTime;
+        currentTime -= Time.deltaTime;
 
-        if (summonTimer <= 0f)
+        // Similar a damageDelay: en la mitad de la anim, invocamos
+        if (!hasInvokedThisCycle && currentTime <= animationDuration * 0.5f)
         {
-            CleanupSummonedEnemies();
-
-            if (summonedEnemies.Count < summonerData.maxSummonedEnemies)
-            {
-                SummonEnemy();
-            }
+            TrySummon();
+            hasInvokedThisCycle = true;
         }
 
-        summonTimer = summonerData.summonInterval;
-
-        if (!manager.CheckForTargetsInRange(summonerData.stopChaseDistance))
+        // Al terminar la "animación"
+        if (currentTime <= 0f)
         {
-            manager.ChangeState(manager.IdleState);
+            // Revisamos si puede seguir invocando o cambiar a Chase/Idle
+            float dist = Mathf.Infinity;
+            if (summonerData.targetTransform != null)
+            {
+                dist = Vector3.Distance(manager.transform.position,
+                                        summonerData.targetTransform.position);
+            }
+
+            bool inRange = (dist <= summonerData.detectionRange);
+            bool canSummonAgain = (summonerData.currentSummonTimer <= 0f);
+
+            // Si sigue cerca y no hay cooldown, repetimos invocación
+            if (inRange && canSummonAgain)
+            {
+                manager.ChangeState(manager.SummonState);
+            }
+            else
+            {
+                // Si está en rango medio, volver a Chase
+                if (dist < summonerData.stopChaseDistance)
+                {
+                    manager.ChangeState(manager.ChaseState);
+                }
+                else
+                {
+                    manager.ChangeState(manager.IdleState);
+                }
+            }
         }
     }
 
     public override void Exit()
     {
-        Debug.Log("Summoner saliendo de estado: SUMMON");
+        Debug.Log("Summoner saliendo de estado: SUMMON (Invocación)");
     }
 
-    private void SummonEnemy()
+    private void TrySummon()
     {
-        if (summonerData.basicEnemyPrefab == null)
+        // Límite de minions y cooldown
+        if (summonerData.currentSummonTimer <= 0f &&
+            summonerData.summonedEnemies.Count < summonerData.maxSummonedEnemies)
         {
-            Debug.LogWarning("No se asignó prefab para invocar enemigos.");
-            return;
+            Vector3 spawnPos = manager.transform.position + manager.transform.forward * 2f;
+            GameObject newEnemy = GameObject.Instantiate(summonerData.basicEnemyPrefab, spawnPos, Quaternion.identity);
+
+            summonerData.summonedEnemies.Add(newEnemy);
+
+            summonerData.currentSummonTimer = summonerData.summonCooldown;
+
+            Debug.Log("Summoner invocó un enemigo!");
         }
-
-        Vector3 spawnPosition = manager.transform.position +
-                                Random.insideUnitSphere * summonerData.summonRadius;
-        spawnPosition.y = manager.transform.position.y;
-
-        GameObject newEnemy = GameObject.Instantiate(summonerData.basicEnemyPrefab, spawnPosition, Quaternion.identity);
-
-        EnemyStateManager newEnemyManager = newEnemy.GetComponent<EnemyStateManager>();
-        if (newEnemyManager != null)
-        {
-            newEnemyManager.enemyData.playerTransform = summonerData.playerTransform;
-        }
-
-        summonedEnemies.Add(newEnemy);
-        Debug.Log("Enemigo básico invocado.");
-    }
-
-    private void CleanupSummonedEnemies()
-    {
-        summonedEnemies.RemoveAll(enemy => enemy == null);
     }
 }
