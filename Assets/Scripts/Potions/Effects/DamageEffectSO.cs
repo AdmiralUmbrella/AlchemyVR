@@ -7,9 +7,9 @@ public class DamageEffectSO : PotionEffectSO
     public EssenceSO essence;
 
     /// <summary>
-    /// Método que aplica el efecto de daño a los enemigos.
+    /// MÃ©todo que aplica el efecto de daÃ±o a los enemigos.
     /// </summary>
-    public override void ApplyEffect(EnemyStateManager enemy, Vector3 hitPosition)
+    public override void ApplyEffect(IEnemy enemy, Vector3 hitPosition)
     {
         enemy.TakeDamage(
             Mathf.RoundToInt(essence.baseDamage),

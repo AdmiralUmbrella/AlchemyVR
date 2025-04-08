@@ -36,18 +36,13 @@ public class Flask : MonoBehaviour
             return;
         }
 
-        //Chequeamos si colisionó con enemigo y isRoundFlask, por ejemplo:
-        if (collision.gameObject.CompareTag("Enemy") && isRoundFlask)
-        {
-            //Conseguimos EnemyStateManager
-            EnemyStateManager enemyManager = collision.gameObject.GetComponent<EnemyStateManager>();
-            if (enemyManager != null)
-            { 
-                //Aplicamos cada efecto que tenga la esencia
-                foreach (PotionEffectSO effect in currentEssence.effectsToApply)
-                {
-                    effect.ApplyEffect(enemyManager, transform.position);
-                }
+        // Se chequea si colisionó con algún enemigo que implemente IEnemy.
+        IEnemy enemyManager = collision.gameObject.GetComponent<IEnemy>();
+        if (enemyManager != null && isRoundFlask)
+        { 
+            foreach (PotionEffectSO effect in currentEssence.effectsToApply)
+            {
+                effect.ApplyEffect(enemyManager, transform.position);
             }
         }
 
