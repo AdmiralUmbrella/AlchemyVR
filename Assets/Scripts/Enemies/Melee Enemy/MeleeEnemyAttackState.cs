@@ -4,17 +4,19 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
 {
     private MeleeEnemyAI manager;
     private MeleeEnemyData enemyData;
+    private TowerAI tower;
 
-    public MeleeEnemyAttackState(MeleeEnemyStates stateKey, MeleeEnemyAI manager, MeleeEnemyData enemyData) : base(stateKey)
+    public MeleeEnemyAttackState(MeleeEnemyStates stateKey, MeleeEnemyAI manager, MeleeEnemyData enemyData,
+        TowerAI tower) : base(stateKey)
     {
         this.manager = manager;
         this.enemyData = enemyData;
+        this.tower = tower;
     }
 
     public override void EnterState()
     {
-        Debug.Log("Enemigo entr� en estado: ATTACK (Nuevo)");
-        // Detener al agente durante el ataque
+        Debug.Log("Enemigo entró en estado: ATTACK (Nuevo)");
         if (enemyData.agent != null)
         {
             enemyData.agent.isStopped = true;
@@ -49,6 +51,7 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     {
         if (enemyData.currentAttackTime <= 0f)
         {
+            // Se asume que si se termina el ataque, se reevalúa la distancia mediante la lógica del Chase.
             float distanceToPlayer = Vector3.Distance(
                 enemyData.agent.transform.position,
                 enemyData.playerTransform.position
@@ -73,9 +76,7 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     }
 
     public override void OnTriggerEnter(Collider other) { }
-
     public override void OnTriggerStay(Collider other) { }
-
     public override void OnTriggerExit(Collider other) { }
 
     private void LookAtTarget()
@@ -91,13 +92,16 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     {
         if (enemyData.playerTransform == null) return;
 
-        if (Vector3.Distance(
-                enemyData.agent.transform.position,
-                enemyData.playerTransform.position
-            ) <= enemyData.attackRange)
+        // Usamos OverlapSphere para confirmar que el collider de la torre está en el rango de ataque.
+        Collider[] hits = Physics.OverlapSphere(enemyData.agent.transform.position, enemyData.attackRange);
+        foreach (Collider col in hits)
         {
-            // Aqu� aplicar�as el da�o al jugador o torre
-            Debug.Log("Da�o aplicado al objetivo.");
+            if (col.CompareTag("Tower"))
+            {
+                tower.TakeDamage(enemyData.attackDamage);
+                Debug.Log("Daño aplicado al objetivo.");
+                return;
+            }
         }
     }
 }

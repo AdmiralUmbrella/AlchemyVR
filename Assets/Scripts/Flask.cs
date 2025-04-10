@@ -8,7 +8,9 @@ public class Flask : MonoBehaviour
     [Header("Explosion Settings")]
     [SerializeField] private GameObject explosionEffectPrefab;
 
-    private EssenceSO currentEssence;
+    [HideInInspector]
+    public EssenceSO currentEssence;
+    
     private Rigidbody rb;
 
     private void Awake() => rb = GetComponent<Rigidbody>();

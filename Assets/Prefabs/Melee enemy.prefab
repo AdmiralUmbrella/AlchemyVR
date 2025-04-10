@@ -59,6 +59,7 @@ MonoBehaviour:
     animator: {fileID: 0}
     agent: {fileID: 7590999739435576262}
     modelRoot: {fileID: 0}
+    tower: {fileID: 0}
     pathUpdateInterval: 0.2
     idleCheckInterval: 0.5
     stopChaseDistance: 15
@@ -83,7 +84,7 @@ MonoBehaviour:
     pyroResistance: 0
     aquaResistance: 0
     geoResistance: 0
-    aeroResistance: 0
+    ventusResistance: 0
 --- !u!33 &3922273633619727308
 MeshFilter:
   m_ObjectHideFlags: 0

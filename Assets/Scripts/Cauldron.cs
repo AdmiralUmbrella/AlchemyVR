@@ -23,7 +23,7 @@ public class Cauldron : MonoBehaviour
     private List<EssenceSO> currentMix = new List<EssenceSO>();
     private Coroutine currentMixRoutine;
     private float currentTimer;
-    private EssenceSO resultingPotion; // Nueva variable para almacenar la poción exitosa
+    private EssenceSO resultingPotion; // Nueva variable para almacenar la pociï¿½n exitosa
 
     private void OnTriggerEnter(Collider other)
     {
@@ -36,7 +36,7 @@ public class Cauldron : MonoBehaviour
             return;
         }
 
-        // Manejar frascos vacíos
+        // Manejar frascos vacï¿½os
         Flask flask = other.GetComponent<Flask>();
         if (flask != null && resultingPotion != null)
         {
@@ -46,7 +46,7 @@ public class Cauldron : MonoBehaviour
 
     private void AddEssence(EssenceSO essence)
     {
-        if (resultingPotion != null) return; // Ignorar si ya hay una poción lista
+        if (resultingPotion != null) return; // Ignorar si ya hay una pociï¿½n lista
 
         if (currentMix.Count >= 3) return;
 
@@ -60,16 +60,13 @@ public class Cauldron : MonoBehaviour
     private IEnumerator MixIngredients()
     {
         currentTimer = mixDelay;
-        timerText.gameObject.SetActive(true);
 
         while (currentTimer > 0)
         {
-            timerText.text = Mathf.CeilToInt(currentTimer).ToString();
             currentTimer -= Time.deltaTime;
             yield return null;
         }
-
-        timerText.gameObject.SetActive(false);
+        
         CheckForValidRecipe();
     }
 
@@ -92,7 +89,7 @@ public class Cauldron : MonoBehaviour
     {
         bool validRecipeFound = false;
 
-        // Primero verificar si es una poción de un solo elemento
+        // Primero verificar si es una pociï¿½n de un solo elemento
         if (currentMix.Count == 1)
         {
             resultingPotion = currentMix[0]; // Usar el elemento directamente
@@ -119,7 +116,7 @@ public class Cauldron : MonoBehaviour
 
         if (!validRecipeFound)
         {
-            // Solo explotar si hay 2+ elementos y no es válido
+            // Solo explotar si hay 2+ elementos y no es vï¿½lido
             if (currentMix.Count >= 2)
             {
                 GameManager.Instance.RegisterPotionCreation(null);

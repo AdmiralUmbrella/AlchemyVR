@@ -4,7 +4,7 @@ using UnityEngine;
 public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
 {
     public MeleeEnemyData enemyData;
-
+    
     void Awake()
     {
         // Asegurarse de que enemyData esté asignado
@@ -18,15 +18,17 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
             Debug.LogError("MeleeEnemyData no está asignado en MeleeEnemyAI.");
             return;
         }
-
+        
         enemyData.currentHealth = enemyData.maxHealth;
-
+        enemyData.tower = GameObject.FindGameObjectWithTag("Tower").gameObject.GetComponent<TowerAI>();
+        // ARREGLAR ESTA PARTE, DEBERÍA HABER UN ARRAY CON LAS TORRES DEL MAPA DE MODO QUE CUANDO DESTRUYA UNA, SIGA CON LA OTRA.
+        
         // Inicializar la máquina de estados usando la arquitectura reusable
         States = new Dictionary<MeleeEnemyStates, BaseState<MeleeEnemyStates>>
         {
             { MeleeEnemyStates.Idle, new MeleeEnemyIdleState(MeleeEnemyStates.Idle, this, enemyData) },
             { MeleeEnemyStates.Chase, new MeleeEnemyChaseState(MeleeEnemyStates.Chase, this, enemyData) },
-            { MeleeEnemyStates.Attack, new MeleeEnemyAttackState(MeleeEnemyStates.Attack, this, enemyData) },
+            { MeleeEnemyStates.Attack, new MeleeEnemyAttackState(MeleeEnemyStates.Attack, this, enemyData, enemyData.tower) },
             { MeleeEnemyStates.Hit, new MeleeEnemyHitState(MeleeEnemyStates.Hit, this, enemyData) },
             { MeleeEnemyStates.Dead, new MeleeEnemyDeadState(MeleeEnemyStates.Dead, this, enemyData) }
         };
@@ -34,56 +36,39 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
         CurrentState = States[MeleeEnemyStates.Idle];
     }
 
-    public void StopAgent()
+    // Nuevo método: detecta la torre mediante OverlapSphere dentro del rango dado.
+    public bool IsTowerWithinAttackRange(float range)
     {
-        if (enemyData.agent != null)
+        Collider[] hits = Physics.OverlapSphere(transform.position, range);
+        foreach (Collider col in hits)
         {
-            enemyData.agent.isStopped = true;
-            enemyData.agent.velocity = Vector3.zero;
-        }
-    }
-
-    public void ResumeAgent()
-    {
-        if (enemyData.agent != null)
-        {
-            enemyData.agent.isStopped = false;
-        }
-    }
-
-// Método auxiliar para verificar objetivos (Tower o Player)
-    public bool CheckForTargetsInRange(float range)
-    {
-        GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
-        Transform nearestTower = null;
-        float nearestDistance = Mathf.Infinity;
-        Vector3 myPosition = transform.position;
-
-        foreach (GameObject tower in towers)
-        {
-            float distance = Vector3.Distance(myPosition, tower.transform.position);
-            if (distance <= range && distance < nearestDistance)
+            if (col.CompareTag("Tower"))
             {
-                nearestDistance = distance;
-                nearestTower = tower.transform;
+                // Asigna el transform del collider de la torre como objetivo.
+                enemyData.playerTransform = col.transform;
+                return true;
             }
         }
+        return false;
+    }
 
-        if (nearestTower != null)
+    // Este método se mantiene para detectar otros posibles objetivos (como el jugador),
+    // pero se complementa con la detección por OverlapSphere para la torre.
+    public bool CheckForTargetsInRange(float range)
+    {
+        if (IsTowerWithinAttackRange(range))
         {
-            enemyData.playerTransform = nearestTower;
             return true;
         }
-
+        
         if (enemyData.playerTransform != null)
         {
-            float playerDistance = Vector3.Distance(myPosition, enemyData.playerTransform.position);
+            float playerDistance = Vector3.Distance(transform.position, enemyData.playerTransform.position);
             if (playerDistance <= range)
             {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -118,7 +103,6 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
         // Si el enemigo ya está muerto o aturdido, se ignoran nuevos impactos
         if (enemyData.isDead || enemyData.isStunned) return;
 
-        // Se aplica la resistencia elemental
         float finalDamage = damage;
         switch (damageSource)
         {
@@ -144,7 +128,6 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
 
         Debug.Log($"{damageSource} aplica {dmgRounded} de daño a {gameObject.name}");
 
-        // Transición al estado de HIT o DEATH según corresponda
         if (enemyData.currentHealth <= 0)
         {
             TransitionToState(MeleeEnemyStates.Dead);
@@ -159,7 +142,6 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
 
     #endregion
 
-// ------------------ Visualización con Gizmos ------------------
     private void OnDrawGizmos()
     {
         if (enemyData != null)

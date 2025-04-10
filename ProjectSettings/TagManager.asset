@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - FxTemporaire
   - Tower
+  - Potion
   layers:
   - Default
   - TransparentFX

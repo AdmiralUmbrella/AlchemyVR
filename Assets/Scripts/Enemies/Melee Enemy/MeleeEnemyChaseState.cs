@@ -14,8 +14,7 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
 
     public override void EnterState()
     {
-        Debug.Log("Enemigo entr� en estado: CHASE (Nuevo)");
-        // Reanudar el movimiento
+        Debug.Log("Enemigo entró en estado: CHASE (Nuevo)");
         if (enemyData.agent != null)
         {
             enemyData.agent.isStopped = false;
@@ -49,23 +48,24 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
 
     public override MeleeEnemyStates GetNextState()
     {
+        // Primero, se verifica si la torre está en el rango de ataque mediante OverlapSphere.
+        if (manager.IsTowerWithinAttackRange(enemyData.attackRange))
+        {
+            return MeleeEnemyStates.Attack;
+        }
+
         if (enemyData.playerTransform == null)
         {
             return MeleeEnemyStates.Idle;
         }
 
-        float distanceToPlayer = Vector3.Distance(
-            enemyData.agent.transform.position,
-            enemyData.playerTransform.position
-        );
-
-        if (distanceToPlayer > enemyData.stopChaseDistance)
+        float distanceToTarget = Vector3.Distance(enemyData.agent.transform.position, enemyData.playerTransform.position);
+        if (distanceToTarget > enemyData.stopChaseDistance)
         {
             Debug.Log("Objetivo muy lejos, volviendo a IDLE (Nuevo)");
             return MeleeEnemyStates.Idle;
         }
-
-        if (distanceToPlayer <= enemyData.attackRange && enemyData.attackCooldownTimer <= 0)
+        if (distanceToTarget <= enemyData.attackRange && enemyData.attackCooldownTimer <= 0)
         {
             return MeleeEnemyStates.Attack;
         }
@@ -74,9 +74,7 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
     }
 
     public override void OnTriggerEnter(Collider other) { }
-
     public override void OnTriggerStay(Collider other) { }
-
     public override void OnTriggerExit(Collider other) { }
 
     private void UpdateChaseTarget()

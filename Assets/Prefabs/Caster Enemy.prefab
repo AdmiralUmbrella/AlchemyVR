@@ -52,7 +52,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2656770235707914571
 Transform:
   m_ObjectHideFlags: 0
@@ -87,12 +87,14 @@ MonoBehaviour:
     moveSpeed: 3.5
     detectionRange: 15
     attackRange: 10
+    attackDamage: 10
     castingTime: 2
     attackCooldown: 3
     targetTransform: {fileID: 0}
     animator: {fileID: 0}
     agent: {fileID: 990122207539382999}
     modelRoot: {fileID: 0}
+    tower: {fileID: 0}
     pyroResistance: 0
     aquaResistance: 0
     geoResistance: 0

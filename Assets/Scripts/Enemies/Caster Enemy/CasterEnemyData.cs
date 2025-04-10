@@ -32,6 +32,9 @@ public class CasterEnemyData
 
     [Tooltip("Rango desde el cual se puede lanzar el hechizo.")]
     public float attackRange = 10f;
+    
+    [Tooltip("Daño base que inflige el enemigo al jugador/tower.")]
+    public int attackDamage = 10;
     #endregion
 
     #region Casting Settings
@@ -56,6 +59,9 @@ public class CasterEnemyData
 
     [Tooltip("Raíz del modelo (útil para buscar componentes en caso de faltar alguna referencia).")]
     public GameObject modelRoot;
+    
+    [Tooltip("Referencia a la torre para acceder al método de realizar daño hacia ella.")]
+    public TowerAI tower;
     #endregion
 
     #region Defensive Settings
@@ -110,5 +116,6 @@ public class CasterEnemyData
     [Tooltip("Dirección del knockback al ser golpeado.")]
     [HideInInspector]
     public Vector3 knockbackDirection;
+
     #endregion
 }

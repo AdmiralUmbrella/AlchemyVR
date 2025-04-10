@@ -42,6 +42,9 @@ public class MeleeEnemyData
 
     [Tooltip("Raíz del modelo, útil para buscar el Animator si no se asigna manualmente.")]
     public GameObject modelRoot;
+    
+    [Tooltip("Referencia a la torre para acceder al método de realizar daño hacia ella.")]
+    public TowerAI tower;
 
     /*--------------------------------------------------------------------------------------------------------
      * Parámetros para la IA de Patrulla / Idle / Pathfinding

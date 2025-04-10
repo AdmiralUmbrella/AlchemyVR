@@ -49,7 +49,7 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
         States = new Dictionary<CasterEnemyState, BaseState<CasterEnemyState>>();
         States.Add(CasterEnemyState.Idle, new CasterEnemyIdleState(CasterEnemyState.Idle, this, enemyData));
         States.Add(CasterEnemyState.Chase, new CasterEnemyChaseState(CasterEnemyState.Chase, this, enemyData));
-        States.Add(CasterEnemyState.Casting, new CasterEnemyCastingState(CasterEnemyState.Casting, this, enemyData));
+        States.Add(CasterEnemyState.Casting, new CasterEnemyCastingState(CasterEnemyState.Casting, this, enemyData, enemyData.tower));
         States.Add(CasterEnemyState.Hit, new CasterEnemyHitState(CasterEnemyState.Hit, this, enemyData));
         States.Add(CasterEnemyState.Dead, new CasterEnemyDeadState(CasterEnemyState.Dead, this, enemyData));
 

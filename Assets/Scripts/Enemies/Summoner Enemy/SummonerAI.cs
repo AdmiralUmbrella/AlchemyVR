@@ -5,6 +5,8 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
     [Header("Datos del Summoner (asignar en Inspector)")]
     public SummonerData summonerData;
 
+    public TowerState tower;
+    
     private UnityEngine.AI.NavMeshAgent agent;
 
     private void Awake()
