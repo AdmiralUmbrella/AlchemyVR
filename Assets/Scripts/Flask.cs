@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class Flask : MonoBehaviour
 {
+    [Header("Liquid Settings")]
+    [SerializeField] private int liquidMaterialIndex = 2; // Índice del material del líquido
+
+    private Material liquidMaterialInstance; // Instancia única del material del líquido
+    private Renderer flaskRenderer;
+
+
     [Header("Settings")]
     [SerializeField] private bool isRoundFlask; // Definido en el Inspector
 
@@ -13,23 +20,38 @@ public class Flask : MonoBehaviour
     
     private Rigidbody rb;
 
-    private void Awake() => rb = GetComponent<Rigidbody>();
-
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        flaskRenderer = GetComponent<Renderer>();
+        InitializeLiquidMaterial();
+    }
+    public Material GetLiquidMaterial() => liquidMaterialInstance;
     // Inicializar frasco con esencia (llamado por el caldero)
     public void InitializeFlask(EssenceSO essence)
     {
         currentEssence = essence;
-        UpdateFlaskAppearance(); // Cambiar color según la esencia
+        UpdateLiquidColor(); // Cambiar color según la esencia
     }
-
-    private void UpdateFlaskAppearance()
+    private void InitializeLiquidMaterial()
     {
-        Renderer renderer = GetComponent<Renderer>();
-        renderer.material.color = currentEssence != null ?
-            currentEssence.essenceColor : Color.black; // Negro = mezcla inválida
+        if (flaskRenderer == null || liquidMaterialIndex >= flaskRenderer.materials.Length) return;
+
+        // Crear instancia única del material del líquido
+        liquidMaterialInstance = new Material(flaskRenderer.materials[liquidMaterialIndex]);
+        Material[] materials = flaskRenderer.materials;
+        materials[liquidMaterialIndex] = liquidMaterialInstance;
+        flaskRenderer.materials = materials;
     }
+    private void UpdateLiquidColor()
+    {
+        if (liquidMaterialInstance == null || currentEssence == null) return;
 
-
+        // Modificar las propiedades del Shader Graph
+        liquidMaterialInstance.SetColor("_FrontColor", currentEssence.essenceColor );    
+        liquidMaterialInstance.SetColor("_BackColor", currentEssence.essenceColor * 0.8f); // Oscurecer para contraste
+        liquidMaterialInstance.SetColor("_FresnelColor", currentEssence.essenceColor); // Cambiar el daño base
+    }
     // Al colisionar
     private void OnCollisionEnter(Collision collision)
     {

@@ -923,6 +923,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1208857e1bcc2184eb600c6fa824bceb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1934554684}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 1208857e1bcc2184eb600c6fa824bceb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1934554692}
   m_SourcePrefab: {fileID: 100100000, guid: 1208857e1bcc2184eb600c6fa824bceb, type: 3}
 --- !u!1 &227841578 stripped
 GameObject:
@@ -3968,6 +3971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5be312d2cf56ee4e802fc3aaa96a19e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  liquidMaterialIndex: 2
   isRoundFlask: 1
   explosionEffectPrefab: {fileID: 0}
   currentEssence: {fileID: 0}
@@ -4048,6 +4052,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4022602181359919812, guid: 1208857e1bcc2184eb600c6fa824bceb, type: 3}
+--- !u!114 &1934554692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934554683}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aadc35d96dc437f4f90fa92d985de9ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxWobble: 3
+  WobbleSpeed: 1
+  Recovery: 1
 --- !u!1001 &1985577080
 PrefabInstance:
   m_ObjectHideFlags: 0
