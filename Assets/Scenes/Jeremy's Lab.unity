@@ -3972,7 +3972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   liquidMaterialIndex: 2
-  isRoundFlask: 1
+  isRoundFlask: 0
   explosionEffectPrefab: {fileID: 0}
   currentEssence: {fileID: 0}
 --- !u!114 &1934554685
