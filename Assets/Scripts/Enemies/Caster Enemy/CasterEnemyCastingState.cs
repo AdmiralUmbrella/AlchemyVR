@@ -8,16 +8,14 @@ public class CasterEnemyCastingState : BaseState<CasterEnemyState>
 {
     private CasterEnemyAI manager;
     private CasterEnemyData enemyData;
-    private TowerAI tower;
 
     /// <summary>
     /// Constructor del estado Casting.
     /// </summary>
-    public CasterEnemyCastingState(CasterEnemyState stateKey, CasterEnemyAI manager, CasterEnemyData enemyData, TowerAI tower) : base(stateKey)
+    public CasterEnemyCastingState(CasterEnemyState stateKey, CasterEnemyAI manager, CasterEnemyData enemyData) : base(stateKey)
     {
         this.manager = manager;
         this.enemyData = enemyData;
-        this.tower = tower;
     }
 
     public override void EnterState()
@@ -62,7 +60,7 @@ public class CasterEnemyCastingState : BaseState<CasterEnemyState>
                     if (hit.transform == enemyData.targetTransform)
                     {
                         Debug.Log("Casteo completado: objetivo impactado correctamente con el raycast");
-                        tower.TakeDamage(enemyData.attackDamage);
+                        enemyData.tower.TakeDamage(enemyData.attackDamage);
                     }
                     else
                     {

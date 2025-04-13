@@ -6,7 +6,11 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
     private MeleeEnemyData enemyData;
     private float pathUpdateTimer;
 
-    public MeleeEnemyChaseState(MeleeEnemyStates stateKey, MeleeEnemyAI manager, MeleeEnemyData enemyData) : base(stateKey)
+    public MeleeEnemyChaseState(
+        MeleeEnemyStates stateKey,
+        MeleeEnemyAI manager,
+        MeleeEnemyData enemyData
+    ) : base(stateKey)
     {
         this.manager = manager;
         this.enemyData = enemyData;
@@ -48,23 +52,37 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
 
     public override MeleeEnemyStates GetNextState()
     {
-        // Primero, se verifica si la torre está en el rango de ataque mediante OverlapSphere.
+        // 1) Si la torre está destruida o la referencia es nula, volver a Patrulla.
+        if (enemyData.tower == null)
+        {
+            return MeleeEnemyStates.Patrol;
+        }
+
+        // 2) Verificar si la torre está en rango de ataque:
         if (manager.IsTowerWithinAttackRange(enemyData.attackRange))
         {
             return MeleeEnemyStates.Attack;
         }
 
+        // 3) Si no hay playerTransform o no hay torre, vuelve a Idle (o Patrulla).
         if (enemyData.playerTransform == null)
         {
-            return MeleeEnemyStates.Idle;
+            return MeleeEnemyStates.Patrol; 
+            // O MeleeEnemyStates.Idle, depende de tu diseño.
         }
 
-        float distanceToTarget = Vector3.Distance(enemyData.agent.transform.position, enemyData.playerTransform.position);
+        // 4) Si el target se alejó demasiado, también volver a Patrulla o Idle.
+        float distanceToTarget = Vector3.Distance(
+            enemyData.agent.transform.position,
+            enemyData.playerTransform.position
+        );
         if (distanceToTarget > enemyData.stopChaseDistance)
         {
-            Debug.Log("Objetivo muy lejos, volviendo a IDLE (Nuevo)");
-            return MeleeEnemyStates.Idle;
+            Debug.Log("Objetivo muy lejos, volviendo a PATROL (modificado)");
+            return MeleeEnemyStates.Patrol;
         }
+
+        // 5) Si estamos en rango para atacar y el cooldown está listo
         if (distanceToTarget <= enemyData.attackRange && enemyData.attackCooldownTimer <= 0)
         {
             return MeleeEnemyStates.Attack;

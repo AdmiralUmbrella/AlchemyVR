@@ -4,14 +4,15 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
 {
     private MeleeEnemyAI manager;
     private MeleeEnemyData enemyData;
-    private TowerAI tower;
 
-    public MeleeEnemyAttackState(MeleeEnemyStates stateKey, MeleeEnemyAI manager, MeleeEnemyData enemyData,
-        TowerAI tower) : base(stateKey)
+    public MeleeEnemyAttackState(
+        MeleeEnemyStates stateKey,
+        MeleeEnemyAI manager,
+        MeleeEnemyData enemyData
+    ) : base(stateKey)
     {
         this.manager = manager;
         this.enemyData = enemyData;
-        this.tower = tower;
     }
 
     public override void EnterState()
@@ -39,8 +40,12 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     public override void UpdateState()
     {
         enemyData.currentAttackTime -= Time.deltaTime;
-        if (!enemyData.hasDealtDamage &&
-            enemyData.currentAttackTime <= (enemyData.attackDuration - enemyData.damageDelay))
+
+        // En algún punto de la animación, se aplica daño (una sola vez).
+        if (
+            !enemyData.hasDealtDamage &&
+            enemyData.currentAttackTime <= (enemyData.attackDuration - enemyData.damageDelay)
+        )
         {
             DealDamage();
             enemyData.hasDealtDamage = true;
@@ -49,13 +54,20 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
 
     public override MeleeEnemyStates GetNextState()
     {
+        // 1) Si la torre está destruida (o la referencia es nula), volver a Patrulla.
+        if (enemyData.tower == null)
+        {
+            return MeleeEnemyStates.Patrol;
+        }
+
+        // 2) Finaliza la animación de ataque
         if (enemyData.currentAttackTime <= 0f)
         {
-            // Se asume que si se termina el ataque, se reevalúa la distancia mediante la lógica del Chase.
             float distanceToPlayer = Vector3.Distance(
                 enemyData.agent.transform.position,
                 enemyData.playerTransform.position
             );
+            // Si sigue en rango y el cooldown está listo, ataca de nuevo.
             if (distanceToPlayer <= enemyData.attackRange)
             {
                 if (enemyData.attackCooldownTimer <= 0)
@@ -72,6 +84,8 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
                 return MeleeEnemyStates.Chase;
             }
         }
+
+        // Mientras no se cumpla el tiempo de ataque, permanecer en Attack.
         return MeleeEnemyStates.Attack;
     }
 
@@ -83,7 +97,8 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     {
         if (enemyData.playerTransform == null) return;
 
-        Vector3 directionToPlayer = enemyData.playerTransform.position - enemyData.agent.transform.position;
+        Vector3 directionToPlayer = enemyData.playerTransform.position -
+                                    enemyData.agent.transform.position;
         directionToPlayer.y = 0;
         enemyData.agent.transform.rotation = Quaternion.LookRotation(directionToPlayer);
     }
@@ -92,14 +107,17 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
     {
         if (enemyData.playerTransform == null) return;
 
-        // Usamos OverlapSphere para confirmar que el collider de la torre está en el rango de ataque.
-        Collider[] hits = Physics.OverlapSphere(enemyData.agent.transform.position, enemyData.attackRange);
+        // Se busca la torre con OverlapSphere para confirmar que está en rango
+        Collider[] hits = Physics.OverlapSphere(
+            enemyData.agent.transform.position,
+            enemyData.attackRange
+        );
         foreach (Collider col in hits)
         {
             if (col.CompareTag("Tower"))
             {
-                tower.TakeDamage(enemyData.attackDamage);
-                Debug.Log("Daño aplicado al objetivo.");
+                enemyData.tower.TakeDamage(enemyData.attackDamage);
+                Debug.Log("Daño aplicado al objetivo (Torre).");
                 return;
             }
         }

@@ -47,7 +47,7 @@ public class SummonerChaseState : BaseState<SummonerState>
             float dist = Vector3.Distance(manager.transform.position, summonerData.targetTransform.position);
             if (dist > summonerData.stopChaseDistance)
             {
-                nextState = SummonerState.Idle;
+                nextState = SummonerState.Patrol;
                 return;
             }
             if (dist <= summonerData.summonRange)

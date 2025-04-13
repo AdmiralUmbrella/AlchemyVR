@@ -33,13 +33,29 @@ public class SummonerIdleState : BaseState<SummonerState>
             if (checkTimer <= 0f)
             {
                 checkTimer = summonerData.idleCheckInterval;
-                bool foundTarget = manager.CheckForTargetsInRange(summonerData.detectionRange);
-                if (foundTarget)
+
+                // ¿Hay torres en rango?
+                bool towerFound = manager.CheckForTowerInRange(summonerData.detectionRange);
+
+                if (!towerFound)
+                {
+                    // No hay torre → destruir enemigos invocados
+                    manager.DestroyAllSummonedEnemies();
+                }
+
+                // Ahora checamos si hay cualquier objetivo en rango (torres o jugador)
+                bool foundAnyTarget = manager.CheckForTargetsInRange(summonerData.detectionRange);
+                if (foundAnyTarget)
                 {
                     nextState = SummonerState.Chase;
                 }
+                else if (summonerData.waypoints != null && summonerData.waypoints.Length > 0)
+                {
+                    nextState = SummonerState.Patrol;
+                }
             }
         }
+
 
         public override void ExitState()
         {

@@ -9,10 +9,10 @@ public class EssenceSO : ScriptableObject
     public float baseDamage = 10f;
 
     [Header("Effect List")]
-    public PotionEffectSO[] effectsToApply; // <-- Aquí se ponen la lista de efectos que queramos en la poción resultante.
+    public PotionEffectSO[] effectsToApply; // <-- AquÃ­ se ponen la lista de efectos que queramos en la pociÃ³n resultante.
 
     [Header("Flask Effects")]
-    public GameObject roundFlaskEffect;  // Prefab para frasco redondo (ej: explosión)
+    public GameObject roundFlaskEffect;  // Prefab para frasco redondo (ej: explosiÃ³n)
     public GameObject squareFlaskEffect; // Prefab para frasco cuadrado (ej: zona persistente)
 
 }

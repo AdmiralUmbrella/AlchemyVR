@@ -52,7 +52,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2656770235707914571
 Transform:
   m_ObjectHideFlags: 0
@@ -63,8 +63,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -8.02, y: 1, z: 16.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7650027479565682229}
   m_Father: {fileID: 0}
@@ -85,8 +85,8 @@ MonoBehaviour:
     maxHealth: 100
     currentHealth: 0
     moveSpeed: 3.5
-    detectionRange: 15
-    attackRange: 10
+    detectionRange: 20
+    attackRange: 15
     attackDamage: 10
     castingTime: 2
     attackCooldown: 3
@@ -107,6 +107,17 @@ MonoBehaviour:
     hitStunDuration: 0.5
     currentHitStunTime: 0
     knockbackDirection: {x: 0, y: 0, z: 0}
+    waypoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    currentWaypointIndex: 0
+    waypointArriveThreshold: 1
+    pathUpdateInterval: 0.5
 --- !u!33 &4228719238552527489
 MeshFilter:
   m_ObjectHideFlags: 0

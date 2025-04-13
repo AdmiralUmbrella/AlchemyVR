@@ -20,17 +20,16 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
         }
         
         enemyData.currentHealth = enemyData.maxHealth;
-        enemyData.tower = GameObject.FindGameObjectWithTag("Tower").gameObject.GetComponent<TowerAI>();
-        // ARREGLAR ESTA PARTE, DEBERÍA HABER UN ARRAY CON LAS TORRES DEL MAPA DE MODO QUE CUANDO DESTRUYA UNA, SIGA CON LA OTRA.
         
         // Inicializar la máquina de estados usando la arquitectura reusable
         States = new Dictionary<MeleeEnemyStates, BaseState<MeleeEnemyStates>>
         {
             { MeleeEnemyStates.Idle, new MeleeEnemyIdleState(MeleeEnemyStates.Idle, this, enemyData) },
             { MeleeEnemyStates.Chase, new MeleeEnemyChaseState(MeleeEnemyStates.Chase, this, enemyData) },
-            { MeleeEnemyStates.Attack, new MeleeEnemyAttackState(MeleeEnemyStates.Attack, this, enemyData, enemyData.tower) },
+            { MeleeEnemyStates.Attack, new MeleeEnemyAttackState(MeleeEnemyStates.Attack, this, enemyData) },
             { MeleeEnemyStates.Hit, new MeleeEnemyHitState(MeleeEnemyStates.Hit, this, enemyData) },
-            { MeleeEnemyStates.Dead, new MeleeEnemyDeadState(MeleeEnemyStates.Dead, this, enemyData) }
+            { MeleeEnemyStates.Dead, new MeleeEnemyDeadState(MeleeEnemyStates.Dead, this, enemyData) },
+            { MeleeEnemyStates.Patrol, new MeleeEnemyPatrolState(MeleeEnemyStates.Patrol, this, enemyData) }
         };
 
         CurrentState = States[MeleeEnemyStates.Idle];
@@ -44,6 +43,7 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
         {
             if (col.CompareTag("Tower"))
             {
+                enemyData.tower = col.GetComponent<TowerAI>();
                 // Asigna el transform del collider de la torre como objetivo.
                 enemyData.playerTransform = col.transform;
                 return true;

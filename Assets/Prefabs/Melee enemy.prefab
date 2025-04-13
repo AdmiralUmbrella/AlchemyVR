@@ -52,7 +52,7 @@ MonoBehaviour:
   enemyData:
     maxHealth: 100
     currentHealth: 0
-    detectionRange: 10
+    detectionRange: 15
     attackRange: 4
     moveSpeed: 3.5
     playerTransform: {fileID: 0}
@@ -62,7 +62,17 @@ MonoBehaviour:
     tower: {fileID: 0}
     pathUpdateInterval: 0.2
     idleCheckInterval: 0.5
-    stopChaseDistance: 15
+    stopChaseDistance: 20
+    waypoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    currentWaypointIndex: 0
+    waypointArriveThreshold: 1
     isAttacking: 0
     attackDamage: 10
     attackDuration: 1

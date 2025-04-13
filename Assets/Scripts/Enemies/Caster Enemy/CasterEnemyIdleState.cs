@@ -45,11 +45,19 @@ public class CasterEnemyIdleState : BaseState<CasterEnemyState>
 
     public override CasterEnemyState GetNextState()
     {
-        // Si se detecta un objetivo, pasar al estado Chase
+        // Si detecta torre:
         if (manager.CheckForTargetsInRange(enemyData.detectionRange))
         {
             return CasterEnemyState.Chase;
         }
+
+        // Si NO detecta torre y hay waypoints, ve a Patrol
+        if (enemyData.waypoints != null && enemyData.waypoints.Length > 0)
+        {
+            return CasterEnemyState.Patrol;
+        }
+
+        // Si no hay waypoints, permanecer en Idle
         return CasterEnemyState.Idle;
     }
 

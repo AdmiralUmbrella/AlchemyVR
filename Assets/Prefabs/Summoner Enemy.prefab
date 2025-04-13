@@ -63,8 +63,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9.15, y: 0.859, z: 8.34}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5911802471433120427}
   m_Father: {fileID: 0}
@@ -95,7 +95,7 @@ MonoBehaviour:
     basicEnemyPrefab: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
     maxSummonedEnemies: 5
     summonCooldown: 5
-    summonRange: 10
+    summonRange: 22
     currentSummonTimer: 0
     summonedEnemies: []
     stunDuration: 0.5
@@ -111,7 +111,18 @@ MonoBehaviour:
     pyroResistance: 0
     aquaResistance: 0
     geoResistance: 0
-    aeroResistance: 0
+    ventusResistance: 0
+    waypoints:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    currentWaypointIndex: 0
+    waypointArriveThreshold: 1
+  tower: 0
 --- !u!33 &2276171523519496743
 MeshFilter:
   m_ObjectHideFlags: 0

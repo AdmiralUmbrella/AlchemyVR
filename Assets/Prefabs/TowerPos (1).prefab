@@ -144,7 +144,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 180.34563
+      value: 193.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -152,11 +152,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 126.13122
+      value: 158.7
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -1
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -164,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -206,7 +206,7 @@ PrefabInstance:
       addedObject: {fileID: 7379756679710117617}
     - targetCorrespondingSourceObject: {fileID: -1448570293137731927, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       insertIndex: 1
-      addedObject: {fileID: 6998484770325669276}
+      addedObject: {fileID: 4066574726295189857}
     - targetCorrespondingSourceObject: {fileID: -1448570293137731927, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4614436412634113062}
@@ -216,7 +216,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -1448570293137731927, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
   m_PrefabInstance: {fileID: 8719553702110056269}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6998484770325669276
+--- !u!114 &4066574726295189857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,7 +234,7 @@ MonoBehaviour:
     fireInterval: 1
     activeDuration: 5
     cooldownDuration: 3
-    detectionRadius: 50
+    detectionRadius: 30
     towerAnimator: {fileID: 7379756679710117617}
   activeEssence: {fileID: 0}
   corePosition: {fileID: 7312800503183105997}

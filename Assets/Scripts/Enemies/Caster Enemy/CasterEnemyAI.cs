@@ -3,18 +3,15 @@ using UnityEngine.AI;
 using System.Collections.Generic;
 
 /// <summary>
-/// Controla la lógica de la máquina de estados del CasterEnemy,
-/// encargándose de instanciar y transicionar entre estados, y de implementar la interfaz IEnemy para efectos externos.
+/// Controla la máquina de estados del CasterEnemy.
 /// </summary>
 public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
 {
     [Header("Caster Enemy Data")]
-    [Tooltip("Datos configurables para el Caster, como rangos, tiempos y referencias.")]
     public CasterEnemyData enemyData;
 
     private void Awake()
     {
-        // Asegurarse de que enemyData esté asignado correctamente
         if (enemyData == null)
         {
             enemyData = GetComponent<CasterEnemyData>();
@@ -35,7 +32,7 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
             enemyData.agent.speed = enemyData.moveSpeed;
         }
 
-        // Buscar el Animator si no se asignó manualmente
+        // Animator
         if (enemyData.animator == null && enemyData.modelRoot != null)
         {
             enemyData.animator = enemyData.modelRoot.GetComponent<Animator>();
@@ -45,49 +42,50 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
             enemyData.animator = GetComponentInChildren<Animator>();
         }
 
-        // Inicializar la máquina de estados
-        States = new Dictionary<CasterEnemyState, BaseState<CasterEnemyState>>();
-        States.Add(CasterEnemyState.Idle, new CasterEnemyIdleState(CasterEnemyState.Idle, this, enemyData));
-        States.Add(CasterEnemyState.Chase, new CasterEnemyChaseState(CasterEnemyState.Chase, this, enemyData));
-        States.Add(CasterEnemyState.Casting, new CasterEnemyCastingState(CasterEnemyState.Casting, this, enemyData, enemyData.tower));
-        States.Add(CasterEnemyState.Hit, new CasterEnemyHitState(CasterEnemyState.Hit, this, enemyData));
-        States.Add(CasterEnemyState.Dead, new CasterEnemyDeadState(CasterEnemyState.Dead, this, enemyData));
+        // Registrar estados
+        States = new Dictionary<CasterEnemyState, BaseState<CasterEnemyState>>
+        {
+            { CasterEnemyState.Idle, new CasterEnemyIdleState(CasterEnemyState.Idle, this, enemyData) },
+            { CasterEnemyState.Patrol, new CasterEnemyPatrolState(CasterEnemyState.Patrol, this, enemyData) },
+            { CasterEnemyState.Chase, new CasterEnemyChaseState(CasterEnemyState.Chase, this, enemyData) },
+            { CasterEnemyState.Casting, new CasterEnemyCastingState(CasterEnemyState.Casting, this, enemyData) },
+            { CasterEnemyState.Hit, new CasterEnemyHitState(CasterEnemyState.Hit, this, enemyData) },
+            { CasterEnemyState.Dead, new CasterEnemyDeadState(CasterEnemyState.Dead, this, enemyData) }
+        };
 
+        // Estado inicial
         CurrentState = States[CasterEnemyState.Idle];
     }
+    
+    public bool IsTowerWithinAttackRange(float range)
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, range);
+        foreach (Collider col in hits)
+        {
+            if (col.CompareTag("Tower"))
+            {
+                enemyData.tower = col.GetComponent<TowerAI>();
+                enemyData.targetTransform = col.transform;
+                return true;
+            }
+        }
+        return false;
+    }
 
-    #region Métodos de Utilidad
-
+    // ReSharper disable Unity.PerformanceAnalysis
     /// <summary>
-    /// Verifica si hay objetivos en rango, dando prioridad a torres sobre el jugador.
-    /// Asigna el targetTransform en enemyData si se encuentra un objetivo.
+    /// Busca torres o jugador en rango; si hay, asigna enemyData.targetTransform.
     /// </summary>
-    /// <param name="range">Rango de detección.</param>
-    /// <returns>True si se encuentra un objetivo, false en caso contrario.</returns>
     public bool CheckForTargetsInRange(float range)
     {
         Vector3 myPosition = transform.position;
 
-        // Buscar torres primero (tag: "Tower")
-        GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
-        Transform nearestTower = null;
-        float nearestDistance = Mathf.Infinity;
-        foreach (GameObject tower in towers)
+        if (IsTowerWithinAttackRange(range))
         {
-            float d = Vector3.Distance(myPosition, tower.transform.position);
-            if (d <= range && d < nearestDistance)
-            {
-                nearestDistance = d;
-                nearestTower = tower.transform;
-            }
-        }
-        if (nearestTower != null)
-        {
-            enemyData.targetTransform = nearestTower;
             return true;
         }
 
-        // Si no hay torres en rango, buscar al jugador (tag: "Player")
+        // Buscar al jugador (tag = "Player")
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
@@ -99,18 +97,12 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
             }
         }
 
+        // Nada en rango
         enemyData.targetTransform = null;
         return false;
     }
 
-    #endregion
-
     #region IEnemy Implementation
-
-    /// <summary>
-    /// Permite cambiar el estado del enemigo desde efectos externos (por ejemplo, pociones).
-    /// </summary>
-    /// <param name="newState">Nuevo estado, ya sea como enum o string.</param>
     public void ChangeState(object newState)
     {
         if (newState is CasterEnemyState state)
@@ -130,13 +122,10 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
             else if (stateStr == "Dead")
                 TransitionToState(CasterEnemyState.Dead);
             else
-                Debug.LogWarning("Estado no reconocido en ChangeState de CasterEnemyAI.");
+                Debug.LogWarning("Estado no reconocido en CasterEnemyAI.");
         }
     }
 
-    /// <summary>
-    /// Aplica daño al enemigo, considerando las resistencias elementales.
-    /// </summary>
     public void TakeDamage(int damage, Vector3 hitPosition, string damageSource)
     {
         if (enemyData.isDead || enemyData.isStunned) return;
@@ -172,18 +161,9 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
         }
     }
 
-    /// <summary>
-    /// Devuelve la Transform del enemigo para que otros sistemas puedan referenciarlo.
-    /// </summary>
     public Transform EnemyTransform => transform;
-
     #endregion
 
-    #region Gizmos for Debugging
-
-    /// <summary>
-    /// Dibuja en la escena los rangos de detección y ataque, así como una línea al objetivo, para facilitar el debuggeo.
-    /// </summary>
     private void OnDrawGizmosSelected()
     {
         if (enemyData == null) return;
@@ -199,5 +179,4 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
             Gizmos.DrawLine(transform.position, enemyData.targetTransform.position);
         }
     }
-    #endregion
 }

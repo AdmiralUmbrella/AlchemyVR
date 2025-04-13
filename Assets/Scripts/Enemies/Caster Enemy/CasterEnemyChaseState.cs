@@ -47,13 +47,29 @@ public class CasterEnemyChaseState : BaseState<CasterEnemyState>
     public override CasterEnemyState GetNextState()
     {
         if (enemyData.targetTransform == null)
-            return CasterEnemyState.Idle;
+        {
+            // Objetivo perdió referencia → Patrulla
+            return CasterEnemyState.Patrol;
+        }
 
-        float distanceToTarget = Vector3.Distance(manager.transform.position, enemyData.targetTransform.position);
+        float distanceToTarget = Vector3.Distance(
+            manager.transform.position,
+            enemyData.targetTransform.position
+        );
+
+        // Si está en rango, a Casting
         if (distanceToTarget <= enemyData.attackRange)
         {
             return CasterEnemyState.Casting;
         }
+
+        // Si se alejó demasiado (puedes configurar un stopChaseDistance):
+        if (distanceToTarget > enemyData.detectionRange * 1.5f)
+        {
+            // Volver a patrullar
+            return CasterEnemyState.Patrol;
+        }
+
         return CasterEnemyState.Chase;
     }
 

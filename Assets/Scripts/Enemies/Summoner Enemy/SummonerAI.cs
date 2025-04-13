@@ -22,6 +22,7 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
 
         // Registrar los estados en el diccionario (utilizando la máquina de estados reusable)
         States.Add(SummonerState.Idle, new SummonerIdleState(this, summonerData));
+        States.Add(SummonerState.Patrol, new SummonerPatrolState(this, summonerData));
         States.Add(SummonerState.Chase, new SummonerChaseState(this, summonerData));
         States.Add(SummonerState.Summon, new SummonerSummonState(this, summonerData));
         States.Add(SummonerState.Hit, new SummonerHitState(this, summonerData));
@@ -121,6 +122,41 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
         }
 
         return false;
+    }
+    
+    public bool CheckForTowerInRange(float range)
+    {
+        GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
+        Transform nearestTower = null;
+        float nearestDist = Mathf.Infinity;
+
+        foreach (var t in towers)
+        {
+            float dist = Vector3.Distance(transform.position, t.transform.position);
+            if (dist <= range && dist < nearestDist)
+            {
+                nearestDist = dist;
+                nearestTower = t.transform;
+            }
+        }
+
+        // Devuelve true si encontró al menos una torre
+        return (nearestTower != null);
+    }
+    
+    public void DestroyAllSummonedEnemies()
+    {
+        // Recorre la lista y destruye los objetos
+        foreach (GameObject summoned in summonerData.summonedEnemies)
+        {
+            if (summoned != null)
+            {
+                Destroy(summoned);
+            }
+        }
+        // Limpia la lista
+        summonerData.summonedEnemies.Clear();
+        Debug.Log("¡Se han destruido todos los enemigos invocados!");
     }
 
     #endregion

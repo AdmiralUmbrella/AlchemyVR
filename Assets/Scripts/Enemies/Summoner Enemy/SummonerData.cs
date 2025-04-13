@@ -117,4 +117,13 @@ public class SummonerData
     [Tooltip("Resistencia al Aire (Ventus). Reduce el daño de ataques de aire.")]
     [Range(0f, 1f)]
     public float ventusResistance = 0f;
+    
+    /*--------------------------------------------------------------------------------------------------------
+     * Waypoints
+     *--------------------------------------------------------------------------------------------------------*/
+    [Header("Patrol (Waypoints)")]
+    public Transform[] waypoints;            // Asignar en el Inspector
+    [HideInInspector] public int currentWaypointIndex = 0;
+    public float waypointArriveThreshold = 1f; 
+
 }

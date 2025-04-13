@@ -25,7 +25,7 @@ public class TowerDestroyedState : BaseState<TowerState>
     private IEnumerator DestroyTowerAfterDelay()
     {
         yield return new WaitForSeconds(3f); // Ajusta el delay según la duración de la animación
-        GameObject.Destroy(towerManager.gameObject);
+        GameObject.Destroy(towerManager.transform.parent.gameObject);
     }
 
     public override void ExitState() { }

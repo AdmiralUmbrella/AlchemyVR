@@ -58,6 +58,11 @@ public class MeleeEnemyData
 
     [Tooltip("Distancia a la que el enemigo deja de perseguir (un poco mayor que el detectionRange).")]
     public float stopChaseDistance = 15f;
+    
+    [Header("Patrol / Waypoints")]
+    public Transform[] waypoints;
+    public int currentWaypointIndex = 0;
+    public float waypointArriveThreshold = 1.0f;
 
     [HideInInspector]
     public bool isAttacking = false;  // Bandera para saber si está en ataque
