@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Hydros
   m_EditorClassIdentifier: 
   essenceName: Hydros
-  essenceColor: {r: 0.34901962, g: 0.5882353, b: 0.6431373, a: 1}
+  essenceColor: {r: 0, g: 0.19210434, b: 1, a: 1}
   baseDamage: 20
   effectsToApply:
   - {fileID: 11400000, guid: f2bca64f4aae1bb409f262c361d531b1, type: 2}
   - {fileID: 11400000, guid: 1751053eade6d7b4d92c30cb3d909403, type: 2}
-  roundFlaskEffect: {fileID: 8205706795460263314, guid: 326e86d5729c54e479798cacab220bb2, type: 3}
-  squareFlaskEffect: {fileID: 0}
+  roundFlaskEffect: {fileID: 7478366525760822976, guid: 10f52b5eb2305ce48a995cf6c48ea7ad, type: 3}
+  squareFlaskEffect: {fileID: 3034120142280402719, guid: 3000f86bc0607ed49984aff3fe6c3085, type: 3}

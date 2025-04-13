@@ -17,5 +17,5 @@ MonoBehaviour:
   baseDamage: 10
   effectsToApply:
   - {fileID: 11400000, guid: 2a2ce7252808b2844badd59639f27744, type: 2}
-  roundFlaskEffect: {fileID: 0}
-  squareFlaskEffect: {fileID: 0}
+  roundFlaskEffect: {fileID: 6499939531436011285, guid: 9cfca7654d8403340a0622f8e4e2879d, type: 3}
+  squareFlaskEffect: {fileID: 5056156160947453464, guid: a8bc258c45b0510429169d22354a0e14, type: 3}
