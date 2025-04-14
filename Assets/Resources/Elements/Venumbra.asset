@@ -15,5 +15,6 @@ MonoBehaviour:
   essenceName: Venumbra
   essenceColor: {r: 0.27058825, g: 0.058823533, b: 0.18039216, a: 1}
   baseDamage: 10
-  roundFlaskEffect: {fileID: 0}
-  squareFlaskEffect: {fileID: 0}
+  effectsToApply: []
+  roundFlaskEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  squareFlaskEffect: {fileID: 3224707547933374841, guid: 6644ddc90b0e2c145b73727aacd13baf, type: 3}
