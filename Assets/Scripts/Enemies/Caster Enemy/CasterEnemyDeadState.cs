@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Estado Dead del CasterEnemy. Se activa cuando el enemigo muere, ejecuta la animación de muerte y puede destruir el objeto.
+/// Estado Dead del CasterEnemy. Se activa cuando el enemigo muere, ejecuta la animación de muerte y, 
+/// tras un tiempo configurado, destruye el GameObject si así se desea.
 /// </summary>
 public class CasterEnemyDeadState : BaseState<CasterEnemyState>
 {
@@ -21,28 +22,60 @@ public class CasterEnemyDeadState : BaseState<CasterEnemyState>
     {
         Debug.Log("CasterEnemy entró en estado: DEAD");
         enemyData.isDead = true;
+        manager.NotifyEnemyDead(); 
+
+        // Desactivar el agente de movimiento
         if (enemyData.agent != null)
         {
             enemyData.agent.enabled = false;
         }
+        
+        // Activar la animación de muerte
         if (enemyData.animator != null)
         {
             enemyData.animator.SetTrigger("Dead");
         }
-        // Aquí se pueden notificar otros sistemas (por ejemplo, GameManager) y ejecutar el cleanup
+
+        // Reiniciar el contador si se va a destruir el GameObject
+        if (enemyData.shouldDestroyOnDeath)
+        {
+            enemyData.currentDeathTime = enemyData.deathDuration;
+        }
+
+        // Notificar a sistemas externos si es necesario (GameManager, etc.)
+        // Por ejemplo: GameManager.Instance.EnemyDied(this);
     }
 
     public override void UpdateState()
     {
-        // Esperar a que la animación de muerte termine y luego destruir el objeto, si así se desea.
+        // Si no se desea destruir tras la muerte, no se hace la cuenta regresiva
+        if (!enemyData.shouldDestroyOnDeath) return;
+
+        // Contar el tiempo de muerte
+        enemyData.currentDeathTime -= Time.deltaTime;
+        if (enemyData.currentDeathTime <= 0f)
+        {
+            // Aquí podrías soltar ítems o sumar puntos antes de destruir
+            // Ejemplo: LootManager.Instance.SpawnLoot(manager.transform.position);
+            // Ejemplo: ScoreManager.Instance.AddScore(50);
+
+            // Finalmente, destruir el gameObject del enemigo
+            GameObject.Destroy(manager.gameObject);
+        }
     }
 
     public override CasterEnemyState GetNextState()
     {
-        return CasterEnemyState.Dead; // Estado terminal
+        // Se permanece en Dead, es un estado terminal
+        return CasterEnemyState.Dead;
     }
 
-    public override void ExitState() { }
+    public override void ExitState()
+    {
+        // Normalmente este estado no se abandona.
+        // Pero si hubiera lógica de "resurrección" o "transformación", se podría manejar aquí.
+    }
+
     public override void OnTriggerEnter(Collider other) { }
     public override void OnTriggerStay(Collider other) { }
     public override void OnTriggerExit(Collider other) { }

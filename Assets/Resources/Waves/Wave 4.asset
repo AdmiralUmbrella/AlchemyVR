@@ -9,7 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1575c31e88ecea74e9825d1f4ac6b37b, type: 3}
-  m_Name: PushEffectVentus
+  m_Script: {fileID: 11500000, guid: a09496d392affee439944388ba4aa61e, type: 3}
+  m_Name: Wave 4
   m_EditorClassIdentifier: 
-  pushForce: 10
+  waveNumber: 4
+  permittedEnemyPrefabs:
+  - {fileID: 5605252360745154529, guid: c308fc7dc86bb934da98cc512d71e5d1, type: 3}
+  totalEnemies: 3
+  spawnInterval: 25

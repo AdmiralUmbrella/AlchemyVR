@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Controla la máquina de estados del CasterEnemy.
@@ -9,6 +11,8 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
 {
     [Header("Caster Enemy Data")]
     public CasterEnemyData enemyData;
+
+    public event Action<CasterEnemyAI> OnEnemyDestroyed; 
 
     private void Awake()
     {
@@ -163,7 +167,16 @@ public class CasterEnemyAI : StateManager<CasterEnemyState>, IEnemy
 
     public Transform EnemyTransform => transform;
     #endregion
-
+    
+    public void NotifyEnemyDead()
+    {
+        if (!enemyData.isDead)
+        {
+            enemyData.isDead = true;
+            OnEnemyDestroyed?.Invoke(this); 
+        }
+    }
+    
     private void OnDrawGizmosSelected()
     {
         if (enemyData == null) return;

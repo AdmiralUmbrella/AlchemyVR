@@ -38,6 +38,7 @@ public class MeleeEnemyDeadState : BaseState<MeleeEnemyStates>
         if (enemyData.currentDeathTime <= 0f)
         {
             Debug.Log("Destruyendo enemigo muerto (Nuevo).");
+            manager.NotifyEnemyDestroyed();
             GameObject.Destroy(manager.gameObject);
         }
     }

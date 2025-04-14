@@ -64,7 +64,7 @@ MonoBehaviour:
     idleCheckInterval: 0.5
     stopChaseDistance: 20
     waypoints:
-    - {fileID: 0}
+    - {fileID: 7008816571994115149, guid: d1e58d0e48307004297bcc1b1a314486, type: 3}
     - {fileID: 0}
     - {fileID: 0}
     - {fileID: 0}

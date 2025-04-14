@@ -28,7 +28,20 @@ public class CasterEnemyData
     public float castingTime = 2f;
     public float attackCooldown = 3f;
     #endregion
+    
+    #region Death Settings
+    [Header("Death Settings")]
+    [Tooltip("Duración de la animación de muerte antes de destruir al enemigo (si shouldDestroyOnDeath es true).")]
+    public float deathDuration = 2f;
 
+    [Tooltip("Si es true, el enemigo se destruye automáticamente tras la animación de muerte.")]
+    public bool shouldDestroyOnDeath = true;
+    
+    // Tiempo interno para el conteo regresivo
+    [HideInInspector]
+    public float currentDeathTime;
+    #endregion
+    
     #region References
     [Header("References")]
     public Transform targetTransform;
@@ -65,4 +78,5 @@ public class CasterEnemyData
     public float waypointArriveThreshold = 1.0f;
     public float pathUpdateInterval = 0.5f;
     #endregion
+    
 }

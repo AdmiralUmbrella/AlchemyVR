@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class SummonerAI : StateManager<SummonerState>, IEnemy
 {
@@ -9,6 +10,7 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
     
     private UnityEngine.AI.NavMeshAgent agent;
 
+    public event Action<SummonerAI> OnEnemyDestroyed;
     private void Awake()
     {
         // Configurar NavMeshAgent
@@ -223,7 +225,7 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
 
         if (summonerData.currentHealth <= 0)
         {
-            Die();
+            TransitionToState(SummonerState.Dead);
         }
         else if (summonerData.canBeStunned)
         {
@@ -237,18 +239,12 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
     public Transform EnemyTransform => transform;
 
     #endregion
-
-    /// <summary>
-    /// Llamado cuando la salud llega a cero.
-    /// </summary>
-    public void Die()
+    
+    public void NotifyEnemyDestroyed()
     {
-        if (!summonerData.isDead)
-        {
-            TransitionToState(SummonerState.Dead);
-        }
+        OnEnemyDestroyed?.Invoke(this);
     }
-
+    
     #region Visualización con Gizmos
 
     private void OnDrawGizmosSelected()

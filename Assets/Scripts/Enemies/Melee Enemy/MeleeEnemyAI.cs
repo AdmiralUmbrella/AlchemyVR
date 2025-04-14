@@ -1,12 +1,18 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
 {
     public MeleeEnemyData enemyData;
+    public event Action<MeleeEnemyAI> OnEnemyDestroyed; 
     
     void Awake()
     {
+        FindAndSortWaypointsByTag("Waypoint");
         // Asegurarse de que enemyData esté asignado
         if (enemyData == null)
         {
@@ -32,7 +38,7 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
             { MeleeEnemyStates.Patrol, new MeleeEnemyPatrolState(MeleeEnemyStates.Patrol, this, enemyData) }
         };
 
-        CurrentState = States[MeleeEnemyStates.Idle];
+        CurrentState = States[MeleeEnemyStates.Patrol];
     }
 
     // Nuevo método: detecta la torre mediante OverlapSphere dentro del rango dado.
@@ -142,6 +148,52 @@ public class MeleeEnemyAI : StateManager<MeleeEnemyStates>, IEnemy
 
     #endregion
 
+    public void NotifyEnemyDestroyed()
+    {
+        OnEnemyDestroyed?.Invoke(this);
+    }
+    
+    /// <summary>
+    /// Busca todos los objetos con 'tagName' y los ordena según el número al final
+    /// de su nombre, por ejemplo "Waypoint (1)", "Waypoint (2)", etc.
+    /// </summary>
+    private void FindAndSortWaypointsByTag(string tagName)
+    {
+        // Buscar todos los objetos con ese tag
+        GameObject[] waypointsObjs = GameObject.FindGameObjectsWithTag(tagName);
+
+        // Crear un patrón para extraer el número entre paréntesis al final
+        // Ejemplo: "Waypoint (2)" -> extraemos '2'
+        Regex regex = new Regex(@"\((\d+)\)$");
+
+        // Ordenar usando una expresión LINQ
+        var sortedWaypoints = waypointsObjs.OrderBy(obj =>
+        {
+            // Intentar extraer el número de su nombre
+            // Si no se encuentra, poner un valor muy alto para que vaya al final
+            Match match = regex.Match(obj.name);
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+            else
+            {
+                return int.MaxValue; 
+            }
+        });
+
+        // Guardar en la lista de waypoints del SummonerData como Transforms
+        enemyData.waypoints = sortedWaypoints
+            .Select(obj => obj.transform)
+            .ToArray();
+
+        // (Opcional) Resetear el índice a 0
+        enemyData.currentWaypointIndex = 0;
+
+        Debug.Log($"Waypoints encontrados y ordenados: {enemyData.waypoints.Length}");
+    }
+
+    
     private void OnDrawGizmos()
     {
         if (enemyData != null)

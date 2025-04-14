@@ -31,18 +31,19 @@ public class SummonerDeadState : BaseState<SummonerState>
         public override void UpdateState()
         {
             if (!summonerData.shouldDestroyOnDeath) return;
+
             summonerData.currentDeathTime -= Time.deltaTime;
+
             if (summonerData.currentDeathTime <= 0f)
             {
                 Debug.Log("Destruyendo Summoner muerto.");
+                manager.NotifyEnemyDestroyed();
                 GameObject.Destroy(manager.gameObject);
             }
         }
 
-        public override void ExitState()
-        {
-            Debug.Log("Summoner saliendo de estado: DEAD");
-        }
+
+        public override void ExitState() { }
 
         public override SummonerState GetNextState()
         {

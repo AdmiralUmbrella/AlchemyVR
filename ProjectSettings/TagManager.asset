@@ -9,6 +9,7 @@ TagManager:
   - FxTemporaire
   - Tower
   - Potion
+  - Waypoint
   layers:
   - Default
   - TransparentFX
