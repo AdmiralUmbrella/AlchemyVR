@@ -7,7 +7,8 @@ public class Cauldron : MonoBehaviour
 {
     [Header("Liquid Settings")]
     [SerializeField] private Renderer liquidRenderer;
-    [SerializeField] private Color defaultColor = Color.gray;
+    [SerializeField] private Color defaultShallowColor = Color.gray;
+    [SerializeField] private Color defaultDeepColor = Color.blue; // Nuevo color para profundidad
 
     [Header("Effects")]
     [SerializeField] private ParticleSystem successEffect;
@@ -23,11 +24,10 @@ public class Cauldron : MonoBehaviour
     private List<EssenceSO> currentMix = new List<EssenceSO>();
     private Coroutine currentMixRoutine;
     private float currentTimer;
-    private EssenceSO resultingPotion; // Nueva variable para almacenar la poci�n exitosa
+    private EssenceSO resultingPotion;
 
     private void OnTriggerEnter(Collider other)
     {
-        // Manejar esencias
         DraggableEssence essence = other.GetComponent<DraggableEssence>();
         if (essence != null)
         {
@@ -36,7 +36,6 @@ public class Cauldron : MonoBehaviour
             return;
         }
 
-        // Manejar frascos vac�os
         Flask flask = other.GetComponent<Flask>();
         if (flask != null && resultingPotion != null)
         {
@@ -46,7 +45,7 @@ public class Cauldron : MonoBehaviour
 
     private void AddEssence(EssenceSO essence)
     {
-        if (resultingPotion != null) return; // Ignorar si ya hay una poci�n lista
+        if (resultingPotion != null) return;
 
         if (currentMix.Count >= 3) return;
 
@@ -66,15 +65,24 @@ public class Cauldron : MonoBehaviour
             currentTimer -= Time.deltaTime;
             yield return null;
         }
-        
+
         CheckForValidRecipe();
     }
 
     private void UpdateLiquidColor()
     {
-        liquidRenderer.material.color = resultingPotion != null ?
-            resultingPotion.essenceColor :
-            (currentMix.Count > 0 ? CalculateMixColor() : defaultColor);
+        if (resultingPotion != null)
+        {
+            // Aplicar color de la poción al shader
+            liquidRenderer.material.SetColor("Color_F01C36BF", resultingPotion.essenceColor);
+            liquidRenderer.material.SetColor("Color_7D9A58EC", resultingPotion.essenceColor * 0.5f); // Oscurecer para profundidad
+        }
+        else
+        {
+            Color mixColor = currentMix.Count > 0 ? CalculateMixColor() : defaultShallowColor;
+            liquidRenderer.material.SetColor("Color_F01C36BF", mixColor);
+            liquidRenderer.material.SetColor("Color_7D9A58EC", mixColor * 0.5f); // Ajuste para profundidad
+        }
     }
 
     private Color CalculateMixColor()
@@ -89,16 +97,14 @@ public class Cauldron : MonoBehaviour
     {
         bool validRecipeFound = false;
 
-        // Primero verificar si es una poci�n de un solo elemento
         if (currentMix.Count == 1)
         {
-            resultingPotion = currentMix[0]; // Usar el elemento directamente
+            resultingPotion = currentMix[0];
             PlayEffect(successEffect);
-            Debug.Log(resultingPotion.essenceName);
             GameManager.Instance.RegisterPotionCreation(resultingPotion);
             validRecipeFound = true;
         }
-        else // Luego verificar recetas complejas
+        else
         {
             foreach (PotionRecipeSO recipe in Resources.LoadAll<PotionRecipeSO>("Recipes"))
             {
@@ -106,30 +112,22 @@ public class Cauldron : MonoBehaviour
                 {
                     resultingPotion = recipe.resultingPotion;
                     PlayEffect(successEffect);
-                    Debug.Log(resultingPotion.essenceName);
                     validRecipeFound = true;
                     break;
                 }
             }
         }
 
-        if (!validRecipeFound)
+        if (!validRecipeFound && currentMix.Count >= 2)
         {
-            // Solo explotar si hay 2+ elementos y no es v�lido
-            if (currentMix.Count >= 2)
-            {
-                PlayEffect(explosionEffect);
-                Debug.Log("Receta no valida");
-                ResetCauldron();
-            }
+            PlayEffect(explosionEffect);
+            ResetCauldron();
         }
-     
     }
 
     private void TransferPotionToFlask(Flask flask)
     {
         if (resultingPotion == null) return;
-
         flask.InitializeFlask(resultingPotion);
         ResetCauldron();
     }
@@ -154,6 +152,8 @@ public class Cauldron : MonoBehaviour
     {
         currentMix.Clear();
         resultingPotion = null;
-        UpdateLiquidColor();
+        // Restaurar colores por defecto del shader
+        liquidRenderer.material.SetColor("Color_F01C36BF", defaultShallowColor);
+        liquidRenderer.material.SetColor("Color_7D9A58EC", defaultDeepColor);
     }
 }
