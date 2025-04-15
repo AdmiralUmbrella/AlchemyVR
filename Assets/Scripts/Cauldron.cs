@@ -107,7 +107,6 @@ public class Cauldron : MonoBehaviour
                     resultingPotion = recipe.resultingPotion;
                     PlayEffect(successEffect);
                     Debug.Log(resultingPotion.essenceName);
-                    GameManager.Instance.RegisterPotionCreation(resultingPotion);
                     validRecipeFound = true;
                     break;
                 }
@@ -119,8 +118,8 @@ public class Cauldron : MonoBehaviour
             // Solo explotar si hay 2+ elementos y no es v�lido
             if (currentMix.Count >= 2)
             {
-                GameManager.Instance.RegisterPotionCreation(null);
                 PlayEffect(explosionEffect);
+                Debug.Log("Receta no valida");
                 ResetCauldron();
             }
         }
