@@ -55,10 +55,19 @@ public class TowerActiveState : BaseState<TowerState>
                 {
                     effect.ApplyEffect(enemyInterface, towerManager.transform.position);
                 }
+
+                // Instanciar el efecto de la poción (ejemplo usando 'roundFlaskEffect')
+                if (towerManager.activeEssence.roundFlaskEffect != null)
+                {
+                    UnityEngine.Object.Instantiate(towerManager.activeEssence.roundFlaskEffect,
+                        enemy.transform.position, Quaternion.identity);
+                }
+
                 Debug.Log("Disparo realizado con los efectos de: " + towerManager.activeEssence.essenceName);
             }
         }
     }
+
 
     public override void OnTriggerEnter(Collider other) { }
     public override void OnTriggerStay(Collider other) { }
