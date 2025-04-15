@@ -101,7 +101,6 @@ public class Cauldron : MonoBehaviour
         {
             resultingPotion = currentMix[0];
             PlayEffect(successEffect);
-            GameManager.Instance.RegisterPotionCreation(resultingPotion);
             validRecipeFound = true;
         }
         else
