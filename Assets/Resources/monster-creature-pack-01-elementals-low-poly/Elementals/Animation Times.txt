@@ -1,0 +1,22 @@
+elemental_1@idle1	1 to 142
+elemental_1@move1	143 to 167
+elemental_1@attack1	170 to 215
+elemental_1@attack2	219 to 246
+
+elemental_2@idle1	1 to 121
+elemental_2@move1	125 to 184
+elemental_2@attack1	187 to 218
+
+elemental_3@idle1	1 to 140
+elemental_3@move1	172 to 197
+elemental_3@attack1	144 to 170
+
+elemental_4@idle1	1 to 141
+elemental_4@move1	143 to 172
+elemental_4@attack1	191 to 222
+elemental_4@attack2	224 to 251
+
+elemental_5@idle1	2 to 43
+elemental_5@move1	46 to 66
+elemental_5@attack1	69 to 149
+elemental_5@attack2	151 to 183

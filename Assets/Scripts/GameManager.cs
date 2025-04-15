@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Llamar desde el botón de UI
+    // Llamar desde el botï¿½n de UI
     public void RestartGame()
     {
         Time.timeScale = 1f;

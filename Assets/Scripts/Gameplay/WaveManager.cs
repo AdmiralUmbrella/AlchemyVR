@@ -8,13 +8,15 @@ public class WaveManager : MonoBehaviour
 
     [SerializeField] private EnemySpawner enemySpawner; // Componente o script que se encarga del spawn real de enemigos
 
-    [Header("Configuraciones de Oleadas")] [SerializeField]
+    [Header("Configuraciones de Oleadas")] 
+    [SerializeField]
     private WaveConfig[] waveConfigs; // Array de configuraciones para las oleadas
 
-    [SerializeField] private bool
-        loopAfterLastWave = false; // Opcional: si deseas seguir iterando una vez termines las oleadas definidas
-
-    private int currentWaveIndex = 0;
+    [SerializeField] 
+    private bool loopAfterLastWave = false; // Opcional: si deseas seguir iterando una vez termines las oleadas definidas
+    
+    [HideInInspector]
+    public int currentWaveIndex = 0;
     private bool isSpawningWave = false;
 
     void Start()

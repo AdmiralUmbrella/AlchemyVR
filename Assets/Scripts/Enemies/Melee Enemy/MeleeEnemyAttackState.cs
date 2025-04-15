@@ -27,6 +27,8 @@ public class MeleeEnemyAttackState : BaseState<MeleeEnemyStates>
         LookAtTarget();
         if (enemyData.animator != null)
         {
+            enemyData.animator.ResetTrigger("Hit");
+            enemyData.animator.SetBool("IsMoving", false);
             enemyData.animator.SetTrigger("Attack");
         }
     }

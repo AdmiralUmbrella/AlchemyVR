@@ -79,6 +79,13 @@ public class TowerAI : StateManager<TowerState>
     public void TakeDamage(int damage)
     {
         towerData.currentHealth -= damage;
+        // Notificar al UI que se debe actualizar la barra de vida
+        TowerHealthUI uiComponent = GetComponent<TowerHealthUI>();
+        if (uiComponent != null)
+        {
+            uiComponent.UpdateHealthBar();
+        }
+        
         if (towerData.currentHealth <= 0)
         {
             Debug.Log("La torre ha sido destruida");

@@ -3287,7 +3287,7 @@ GameObject:
   - component: {fileID: 2111870135127975145}
   m_Layer: 2
   m_Name: XR Origin (Player)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3324,7 +3324,7 @@ MonoBehaviour:
   m_Camera: {fileID: 4245376966983555520}
   m_OriginBaseGameObject: {fileID: 4966482955912973152}
   m_CameraFloorOffsetObject: {fileID: 3998544711434991104}
-  m_RequestedTrackingOriginMode: 0
+  m_RequestedTrackingOriginMode: 2
   m_CameraYOffset: 1.36144
 --- !u!114 &4385065711760550635
 MonoBehaviour:

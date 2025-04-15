@@ -48,9 +48,10 @@ public class MeleeEnemyIdleState : BaseState<MeleeEnemyStates>
     public override MeleeEnemyStates GetNextState()
     {
         // Si hay un objetivo en rango, pasar a Chase; de lo contrario, permanecer en Idle.
-        if (manager.CheckForTargetsInRange(enemyData.detectionRange))
+        if (enemyData.playerTransform == null)
         {
-            return MeleeEnemyStates.Chase;
+            return MeleeEnemyStates.Patrol; 
+            // O MeleeEnemyStates.Idle, depende de tu diseño.
         }
         return MeleeEnemyStates.Idle;
     }
