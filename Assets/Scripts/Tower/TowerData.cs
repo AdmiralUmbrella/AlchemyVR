@@ -27,4 +27,5 @@ public class TowerData
     [Header("Animación y Efectos")]
     [Tooltip("Referencia al Animator que controla las animaciones específicas de la torre (cada torre tiene su propio Animator).")]
     public Animator towerAnimator;
+    public Animator towerCrystal;
 }

@@ -5,8 +5,11 @@ public class MeleeEnemyPatrolState : BaseState<MeleeEnemyStates>
     private MeleeEnemyAI manager;
     private MeleeEnemyData enemyData;
 
-    public MeleeEnemyPatrolState(MeleeEnemyStates stateKey, MeleeEnemyAI manager, MeleeEnemyData enemyData)
-        : base(stateKey)
+    public MeleeEnemyPatrolState(
+        MeleeEnemyStates stateKey,
+        MeleeEnemyAI manager,
+        MeleeEnemyData enemyData
+    ) : base(stateKey)
     {
         this.manager = manager;
         this.enemyData = enemyData;
@@ -15,21 +18,17 @@ public class MeleeEnemyPatrolState : BaseState<MeleeEnemyStates>
     public override void EnterState()
     {
         Debug.Log("Entrando en estado PATROL");
-        
         if (enemyData.agent != null)
         {
             enemyData.agent.isStopped = false;
             enemyData.agent.speed = enemyData.moveSpeed;
         }
-
-        // Configurar animación
         if (enemyData.animator != null)
         {
             enemyData.animator.SetBool("IsMoving", true);
         }
-        
-        // Actualizar destino del waypoint
-        UpdateWaypointDestination();
+        // Fijamos el primer destino
+        SetNextWaypointDestination();
     }
 
     public override void ExitState()
@@ -43,61 +42,54 @@ public class MeleeEnemyPatrolState : BaseState<MeleeEnemyStates>
 
     public override void UpdateState()
     {
-        UpdateWaypointDestination();
+        // ¡No hacemos más chequeos de distancia aquí!
+        // El avance ocurre en OnTriggerEnter
     }
 
     public override MeleeEnemyStates GetNextState()
     {
-        // 1) Si el enemigo detecta una torre en rango, desviarse:
+        // Si detecta torre/jugador, cambia a Chase
         if (manager.CheckForTargetsInRange(enemyData.detectionRange))
         {
-            // Se transiciona a CHASE (y luego ATTACK).
             return MeleeEnemyStates.Chase;
         }
-
-        // 2) Si no hay torre, seguir en Patrol
         return MeleeEnemyStates.Patrol;
     }
 
-    public override void OnTriggerEnter(Collider other) { }
+    public override void OnTriggerEnter(Collider other)
+    {
+        // Detectamos sólo triggers de waypoints
+        if (!other.CompareTag("Waypoint")) return;
+
+        // Comprobamos que sea el waypoint actual
+        Transform target = enemyData.waypoints[enemyData.currentWaypointIndex];
+        if (other.transform == target)
+        {
+            // Avanzamos índice (y reseteamos al llegar al final, o detenemos)
+            enemyData.currentWaypointIndex++;
+            if (enemyData.currentWaypointIndex >= enemyData.waypoints.Length)
+            {
+                // Opcional: reiniciar o parar
+                enemyData.currentWaypointIndex = 0;
+            }
+            SetNextWaypointDestination();
+        }
+    }
+
     public override void OnTriggerStay(Collider other) { }
     public override void OnTriggerExit(Collider other) { }
 
-    private void UpdateWaypointDestination()
+    private void SetNextWaypointDestination()
     {
-        // Si no hay waypoints configurados, caer de nuevo a Idle, por ejemplo
         if (enemyData.waypoints == null || enemyData.waypoints.Length == 0)
         {
             manager.TransitionToState(MeleeEnemyStates.Idle);
             return;
         }
-        
-        CheckArrivalToWaypoint();
-        
-        Transform targetWaypoint = enemyData.waypoints[enemyData.currentWaypointIndex];
-        if (targetWaypoint != null && enemyData.agent != null)
+        Transform wp = enemyData.waypoints[enemyData.currentWaypointIndex];
+        if (wp != null && enemyData.agent != null)
         {
-            enemyData.agent.SetDestination(targetWaypoint.position);
-        }
-    }
-
-    private void CheckArrivalToWaypoint()
-    {
-        //if (enemyData.agent == null) return;
-
-        float distance = Vector3.Distance(
-            enemyData.agent.transform.position,
-            enemyData.waypoints[enemyData.currentWaypointIndex].position
-        );
-
-        if (distance <= enemyData.waypointArriveThreshold)
-        {
-            // Pasar al siguiente waypoint
-            enemyData.currentWaypointIndex++;
-            if (enemyData.currentWaypointIndex >= enemyData.waypoints.Length)
-            {
-                enemyData.agent.isStopped = true;
-            }
+            enemyData.agent.SetDestination(wp.position);
         }
     }
 }

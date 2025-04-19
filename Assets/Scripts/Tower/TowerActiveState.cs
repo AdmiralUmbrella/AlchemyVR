@@ -15,6 +15,8 @@ public class TowerActiveState : BaseState<TowerState>
     public override void EnterState()
     {
         Debug.Log("Torre en estado ACTIVE: disparando.");
+        towerManager.towerData.towerCrystal.SetBool("IsCharging", false);
+        towerManager.towerData.towerCrystal.SetBool("IsAttacking", true);
         fireTimer = towerManager.towerData.fireInterval;
         activeTimer = towerManager.towerData.activeDuration;
     }

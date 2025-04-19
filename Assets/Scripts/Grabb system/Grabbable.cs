@@ -41,7 +41,7 @@ public class Grabbable : MonoBehaviour
     }
     public void Throw(Vector3 direction)
     {
-        Release(); // Asegurarse de reactivar la física
+        Release(); // Asegurarse de reactivar la fÃ­sica
         Rb.AddForce(direction * throwForce, ForceMode.Impulse);
     }
     void Start()
