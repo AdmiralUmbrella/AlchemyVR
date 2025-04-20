@@ -101,7 +101,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3919141806760488758}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -110,7 +110,7 @@ RectTransform:
   - {fileID: 7512651821856296539}
   - {fileID: 4005229322364900884}
   m_Father: {fileID: 9117725022545979558}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 15.4}
@@ -339,7 +339,6 @@ GameObject:
   m_Component:
   - component: {fileID: 98444593946858514}
   - component: {fileID: 4709712262124226193}
-  - component: {fileID: 464132513009899735}
   - component: {fileID: 2109879052404000038}
   m_Layer: 0
   m_Name: Tower Camera
@@ -356,13 +355,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7543732111235429551}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0690642, y: -0.85407865, z: 0.11751022, w: 0.50196725}
-  m_LocalPosition: {x: 13.165004, y: 10.895, z: 6.529997}
+  m_LocalRotation: {x: 0.08554002, y: 0.8052427, z: -0.119926505, w: 0.5743559}
+  m_LocalPosition: {x: -11.431, y: 10.771, z: 8.556}
   m_LocalScale: {x: 0.50000006, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9117725022545979558}
-  m_LocalEulerAnglesHint: {x: 15.668, y: 150.888, z: 0}
+  m_LocalEulerAnglesHint: {x: 16.942, y: 109.002, z: 0}
 --- !u!20 &4709712262124226193
 Camera:
   m_ObjectHideFlags: 0
@@ -404,7 +403,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: c28bf419c6080424d9219fb2e7defcbe, type: 2}
+  m_TargetTexture: {fileID: 8400000, guid: a859cb95670c78f4d90110665c5e9806, type: 2}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -414,14 +413,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &464132513009899735
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7543732111235429551}
-  m_Enabled: 1
 --- !u!114 &2109879052404000038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,13 +485,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8694066030803186519}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.2536485, z: -0, w: 0.9672965}
-  m_LocalPosition: {x: -42.096, y: 19.25, z: -2.51}
+  m_LocalRotation: {x: -0, y: -0.8633385, z: -0, w: 0.5046253}
+  m_LocalPosition: {x: -10.16, y: 19.25, z: -12.503}
   m_LocalScale: {x: 0.41664, y: 0.41664, z: 0.41664}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9117725022545979558}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -119.387, z: 0}
 --- !u!114 &6184044196873156680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,7 +601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.9175415
+      value: 36.30754
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -618,11 +609,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 76.56174
+      value: 13.731743
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.7071068
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.x
@@ -630,7 +621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7071068
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       propertyPath: m_LocalRotation.z
@@ -714,6 +705,7 @@ MonoBehaviour:
     cooldownDuration: 3
     detectionRadius: 30
     towerAnimator: {fileID: 7379756679710117617}
+    towerCrystal: {fileID: 0}
   activeEssence: {fileID: 0}
   corePosition: {fileID: 7312800503183105997}
 --- !u!114 &6589994460099690698
