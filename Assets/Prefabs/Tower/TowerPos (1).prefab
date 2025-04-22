@@ -179,6 +179,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &4542184994079599770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3863459257863112307}
+  m_Layer: 0
+  m_Name: Tp Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3863459257863112307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4542184994079599770}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.71, y: 0, z: 7.31}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9117725022545979558}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5728073979375153849
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,6 +694,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 98444593946858514}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3863459257863112307}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4fafd9b36c48bb04881fc57164e9252a, type: 3}
       insertIndex: -1
@@ -705,7 +739,7 @@ MonoBehaviour:
     cooldownDuration: 3
     detectionRadius: 30
     towerAnimator: {fileID: 7379756679710117617}
-    towerCrystal: {fileID: 0}
+    towerCrystal: {fileID: 2248300156224381175}
   activeEssence: {fileID: 0}
   corePosition: {fileID: 7312800503183105997}
 --- !u!114 &6589994460099690698
