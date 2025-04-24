@@ -18,6 +18,9 @@ public class Teleporter : MonoBehaviour
 
     [Header("Mapeos textura → destino")]
     public Mapping[] mappings;
+    
+    [Header("Torres")]
+    public GameObject[] towers;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -40,6 +43,8 @@ public class Teleporter : MonoBehaviour
         {
             if (m.texture == currentTex && m.target != null)
             {
+                towers[0].gameObject.SetActive(false);
+                towers[1].gameObject.SetActive(true);
                 other.transform.SetPositionAndRotation(
                     m.target.position,
                     m.target.rotation

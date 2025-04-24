@@ -15,8 +15,8 @@ public class WaveManager : MonoBehaviour
     [SerializeField] 
     private bool loopAfterLastWave = false; // Opcional: si deseas seguir iterando una vez termines las oleadas definidas
     
-    [HideInInspector]
     public int currentWaveIndex = 0;
+    
     private bool isSpawningWave = false;
 
     void Start()
