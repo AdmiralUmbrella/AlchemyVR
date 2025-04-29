@@ -2,7 +2,7 @@
 
 public class EnemySpawner : MonoBehaviour
 {
-    public int EnemiesAlive { get; private set; } = 0;
+    public int EnemiesAlive  = 0;
 
     // Método responsable de instanciar al enemigo con información adicional
     public void SpawnEnemy(GameObject enemyPrefab, Vector3 spawnPosition, WaveConfig waveConfig)

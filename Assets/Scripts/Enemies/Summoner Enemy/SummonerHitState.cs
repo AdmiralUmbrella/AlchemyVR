@@ -33,10 +33,7 @@ public class SummonerHitState : BaseState<SummonerState>
         public override void UpdateState()
         {
             summonerData.currentStunTime -= Time.deltaTime;
-            if (summonerData.currentStunTime > summonerData.stunDuration * 0.5f)
-            {
-                ApplyKnockback();
-            }
+
             if (summonerData.currentStunTime <= 0f)
             {
                 bool inRange = manager.CheckForTargetsInRange(summonerData.detectionRange);
@@ -58,14 +55,5 @@ public class SummonerHitState : BaseState<SummonerState>
         public override void OnTriggerEnter(Collider other) { }
         public override void OnTriggerStay(Collider other) { }
         public override void OnTriggerExit(Collider other) { }
-
-        private void ApplyKnockback()
-        {
-            NavMeshAgent navAgent = manager.GetComponent<NavMeshAgent>();
-            if (navAgent != null && summonerData.knockbackDirection != Vector3.zero)
-            {
-                Vector3 knock = summonerData.knockbackDirection * summonerData.knockbackForce;
-                navAgent.Move(knock * Time.deltaTime);
-            }
-        }
+        
     }

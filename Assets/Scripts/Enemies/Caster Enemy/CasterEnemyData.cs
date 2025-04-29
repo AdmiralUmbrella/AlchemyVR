@@ -21,6 +21,7 @@ public class CasterEnemyData
     public float detectionRange = 15f;
     public float attackRange = 10f;
     public int attackDamage = 10;
+    public GameObject beamPrefab;      
     #endregion
 
     #region Casting Settings

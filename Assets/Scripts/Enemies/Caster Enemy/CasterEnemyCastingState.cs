@@ -1,87 +1,79 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// Estado Casting del CasterEnemy. Durante este estado el enemigo se queda quieto y canaliza su hechizo.
-/// Al finalizar el casteo, se realiza un raycast hacia el objetivo para aplicar daño, siempre que la línea de visión esté despejada.
-/// </summary>
 public class CasterEnemyCastingState : BaseState<CasterEnemyState>
 {
-    private CasterEnemyAI manager;
-    private CasterEnemyData enemyData;
+    private readonly CasterEnemyAI manager;
+    private readonly CasterEnemyData enemyData;
 
-    /// <summary>
-    /// Constructor del estado Casting.
-    /// </summary>
-    public CasterEnemyCastingState(CasterEnemyState stateKey, CasterEnemyAI manager, CasterEnemyData enemyData) : base(stateKey)
+    /* ---------- Efecto visual ---------- */
+    private const string BEAM_KEY = "CasterBeam";              // ★ clave del pool
+
+    public CasterEnemyCastingState(
+        CasterEnemyState key,
+        CasterEnemyAI manager,
+        CasterEnemyData data
+    ) : base(key)
     {
-        this.manager = manager;
-        this.enemyData = enemyData;
+        this.manager   = manager;
+        this.enemyData = data;
     }
 
     public override void EnterState()
     {
-        Debug.Log("CasterEnemy entró en estado: CASTING");
-        enemyData.isCasting = true;
+        Debug.Log("CASTING");
+        enemyData.isCasting        = true;
         enemyData.currentCastingTime = enemyData.castingTime;
-        if (enemyData.agent != null)
-        {
-            enemyData.agent.isStopped = true;
-        }
-        if (enemyData.animator != null)
-        {
-            enemyData.animator.SetTrigger("Cast");
-        }
+
+        if (enemyData.agent != null) enemyData.agent.isStopped = true;
+        enemyData.animator?.SetTrigger("Cast");
     }
 
     public override void UpdateState()
     {
         enemyData.currentCastingTime -= Time.deltaTime;
-        // Dibujar la línea del raycast para depuración
         if (enemyData.targetTransform != null)
-        {
-            Debug.DrawLine(manager.transform.position, enemyData.targetTransform.position, Color.red);
-        }
+            Debug.DrawLine(manager.transform.position,
+                           enemyData.targetTransform.position,
+                           Color.red);
     }
 
     public override CasterEnemyState GetNextState()
     {
-        if (enemyData.currentCastingTime <= 0f)
-        {
-            // Al finalizar el casteo, se lanza el raycast
-            if (enemyData.targetTransform != null)
-            {
-                Vector3 origin = manager.transform.position;
-                Vector3 direction = (enemyData.targetTransform.position - origin).normalized;
+        if (enemyData.currentCastingTime > 0f) return CasterEnemyState.Casting;
 
-                // Se lanza el raycast dentro del rango de ataque
-                if (Physics.Raycast(origin, direction, out RaycastHit hit, enemyData.attackRange))
+        /* ---------- Fin del casteo ---------- */
+        if (enemyData.targetTransform != null)
+        {
+            Vector3 origin = manager.transform.position;
+            Vector3 dir    = (enemyData.targetTransform.position - origin).normalized;
+            
+            Quaternion rot = Quaternion.LookRotation(dir);  
+
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, enemyData.attackRange))
+            {
+                if (hit.transform == enemyData.targetTransform)
                 {
-                    // Solo si el raycast impacta al objetivo se considera un ataque exitoso
-                    if (hit.transform == enemyData.targetTransform)
-                    {
-                        Debug.Log("Casteo completado: objetivo impactado correctamente con el raycast");
-                        enemyData.tower.TakeDamage(enemyData.attackDamage);
-                    }
-                    else
-                    {
-                        Debug.Log("Casteo completado: raycast impactó un obstáculo, no se aplica daño");
-                    }
+                    // ★ Spawn del efecto vía pooling
+                    PoolManager.Instance.Spawn(
+                        BEAM_KEY,
+                        enemyData.beamPrefab,
+                        origin + dir * 1.0f,   // opcional: offset delante del caster
+                        rot
+                    );
+
+                    enemyData.tower.TakeDamage(enemyData.attackDamage);
                 }
             }
-            // Se activa el cooldown y se regresa al estado Chase
-            enemyData.currentCooldown = enemyData.attackCooldown;
-            enemyData.isCasting = false;
-            return CasterEnemyState.Chase;
         }
-        return CasterEnemyState.Casting;
+
+        enemyData.currentCooldown = enemyData.attackCooldown;
+        enemyData.isCasting       = false;
+        return CasterEnemyState.Chase;
     }
 
-    public override void ExitState()
-    {
-        Debug.Log("CasterEnemy saliendo de estado: CASTING");
-    }
+    public override void ExitState() { }
 
-    public override void OnTriggerEnter(Collider other) { }
-    public override void OnTriggerStay(Collider other) { }
-    public override void OnTriggerExit(Collider other) { }
+    public override void OnTriggerEnter(Collider _) { }
+    public override void OnTriggerStay(Collider _)  { }
+    public override void OnTriggerExit(Collider _)  { }
 }

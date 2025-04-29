@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameplayManager : MonoBehaviour
 {
-    public WaveManager waveManager;
+    public WaveManagerOLD waveManager;
 
     void Update()
     {

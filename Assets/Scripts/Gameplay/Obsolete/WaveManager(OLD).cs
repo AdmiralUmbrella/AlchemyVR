@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WaveManager : MonoBehaviour
+public class WaveManagerOLD : MonoBehaviour
 {
     [Header("Otras referencias")] [SerializeField]
     private Transform[] spawnPoints; // Lugares donde se generan los enemigos
@@ -15,7 +15,7 @@ public class WaveManager : MonoBehaviour
     [SerializeField] 
     private bool loopAfterLastWave = false; // Opcional: si deseas seguir iterando una vez termines las oleadas definidas
     
-    [HideInInspector]
+    
     public int currentWaveIndex = 0;
     private bool isSpawningWave = false;
 
@@ -53,6 +53,7 @@ public class WaveManager : MonoBehaviour
         // Esto requiere que lleves un conteo de enemigos activos (puedes manejarlo dentro de EnemySpawner)
         while (enemySpawner.EnemiesAlive > 0)
         {
+            Debug.Log($"[WaveMgr] EnemiesAlive = {enemySpawner.EnemiesAlive}");
             yield return null;
         }
 

@@ -27,24 +27,15 @@ public class CasterEnemyPatrolState : BaseState<CasterEnemyState>
         }
         if (enemyData.animator != null)
         {
-            enemyData.animator.SetBool("IsMoving", true);
+            enemyData.animator.SetTrigger("Move");
         }
 
         pathUpdateTimer = 0f;
-        UpdateWaypointDestination(); 
+        SetNextWaypointDestination();
     }
 
     public override void UpdateState()
-    {
-        pathUpdateTimer -= Time.deltaTime;
-        if (pathUpdateTimer <= 0f)
-        {
-            pathUpdateTimer = enemyData.pathUpdateInterval;
-            UpdateWaypointDestination();
-        }
-
-        CheckArrivalToWaypoint();
-    }
+    { }
 
     public override CasterEnemyState GetNextState()
     {
@@ -67,44 +58,41 @@ public class CasterEnemyPatrolState : BaseState<CasterEnemyState>
         }
     }
 
-    public override void OnTriggerEnter(Collider other) { }
-    public override void OnTriggerStay(Collider other) { }
-    public override void OnTriggerExit(Collider other) { }
-
-    private void UpdateWaypointDestination()
+    public override void OnTriggerEnter(Collider other)
     {
-        // Validar si hay waypoints
-        if (enemyData.waypoints == null || enemyData.waypoints.Length == 0)
+        // Detectamos sólo triggers de waypoints
+        if (!other.CompareTag("Waypoint")) return;
+
+        // Comprobamos que sea el waypoint actual
+        Transform target = enemyData.waypoints[enemyData.currentWaypointIndex];
+        if (other.transform == target)
         {
-            // Sin waypoints, quedarnos en Idle
-            manager.TransitionToState(CasterEnemyState.Idle);
-            return;
-        }
-
-        Transform currentWaypoint = enemyData.waypoints[enemyData.currentWaypointIndex];
-        if (currentWaypoint != null && enemyData.agent != null)
-        {
-            enemyData.agent.SetDestination(currentWaypoint.position);
-        }
-    }
-
-    private void CheckArrivalToWaypoint()
-    {
-        if (enemyData.agent == null) return;
-
-        // Distancia al waypoint actual
-        Transform wp = enemyData.waypoints[enemyData.currentWaypointIndex];
-        float distance = Vector3.Distance(enemyData.agent.transform.position, wp.position);
-
-        if (distance <= enemyData.waypointArriveThreshold)
-        {
-            // Mover al siguiente waypoint (o volver al 0 si ya estamos al final)
+            // Avanzamos índice (y reseteamos al llegar al final, o detenemos)
             enemyData.currentWaypointIndex++;
             if (enemyData.currentWaypointIndex >= enemyData.waypoints.Length)
             {
-                enemyData.agent.isStopped = true;
+                // Opcional: reiniciar o parar
+                enemyData.currentWaypointIndex = 0;
             }
-            UpdateWaypointDestination();
+            SetNextWaypointDestination();
+        }
+    }
+    public override void OnTriggerStay(Collider other) { }
+    public override void OnTriggerExit(Collider other) { }
+
+
+
+    private void SetNextWaypointDestination()
+    {
+        if (enemyData.waypoints == null || enemyData.waypoints.Length == 0)
+        {
+            manager.TransitionToState(CasterEnemyState.Idle);
+            return;
+        }
+        Transform wp = enemyData.waypoints[enemyData.currentWaypointIndex];
+        if (wp != null && enemyData.agent != null)
+        {
+            enemyData.agent.SetDestination(wp.position);
         }
     }
 }

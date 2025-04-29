@@ -27,16 +27,11 @@ public class CasterEnemyHitState : BaseState<CasterEnemyState>
             enemyData.agent.isStopped = true;
             enemyData.agent.velocity = Vector3.zero;
         }
-        if (enemyData.animator != null)
-        {
-            enemyData.animator.SetTrigger("Hit");
-        }
     }
 
     public override void UpdateState()
     {
         enemyData.currentHitStunTime -= Time.deltaTime;
-        // Aquí podrías aplicar knockback si lo deseas usando enemyData.knockbackDirection
     }
 
     public override CasterEnemyState GetNextState()

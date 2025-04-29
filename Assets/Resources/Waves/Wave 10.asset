@@ -9,13 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a09496d392affee439944388ba4aa61e, type: 3}
+  m_Script: {fileID: 11500000, guid: 986e830b2436405e9f4de57b02125b5d, type: 3}
   m_Name: Wave 10
   m_EditorClassIdentifier: 
   waveNumber: 10
-  permittedEnemyPrefabs:
-  - {fileID: 2951539818293277606, guid: d6f212aaa30969642aa5228c7fae9565, type: 3}
-  - {fileID: 5605252360745154529, guid: c308fc7dc86bb934da98cc512d71e5d1, type: 3}
-  - {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-  totalEnemies: 5
-  spawnInterval: 25
+  enemies:
+  - enemyPrefab: {fileID: 2951539818293277606, guid: d6f212aaa30969642aa5228c7fae9565, type: 3}
+    count: 2
+  - enemyPrefab: {fileID: 5605252360745154529, guid: c308fc7dc86bb934da98cc512d71e5d1, type: 3}
+    count: 2
+  - enemyPrefab: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+    count: 1
+  warmupTime: 5
+  spawnInterval: 2

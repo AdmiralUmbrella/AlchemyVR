@@ -28,7 +28,7 @@ public class CasterEnemyIdleState : BaseState<CasterEnemyState>
         }
         if (enemyData.animator != null)
         {
-            enemyData.animator.SetBool("IsMoving", false);
+            enemyData.animator.SetTrigger("Idle");
         }
         checkTimer = 0f;
     }

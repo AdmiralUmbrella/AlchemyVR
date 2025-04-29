@@ -43,10 +43,6 @@ public class MeleeEnemyHitState : BaseState<MeleeEnemyStates>
     public override void UpdateState()
     {
         enemyData.currentHitStunTime -= Time.deltaTime;
-        if (enemyData.currentHitStunTime > enemyData.hitStunDuration * 0.5f)
-        {
-            ApplyKnockback();
-        }
     }
 
     public override MeleeEnemyStates GetNextState()
@@ -70,13 +66,5 @@ public class MeleeEnemyHitState : BaseState<MeleeEnemyStates>
     public override void OnTriggerStay(Collider other) { }
 
     public override void OnTriggerExit(Collider other) { }
-
-    private void ApplyKnockback()
-    {
-        if (enemyData.agent != null && enemyData.knockbackDirection != Vector3.zero)
-        {
-            Vector3 knockback = enemyData.knockbackDirection * enemyData.knockbackForce;
-            enemyData.agent.Move(knockback * Time.deltaTime);
-        }
-    }
+    
 }

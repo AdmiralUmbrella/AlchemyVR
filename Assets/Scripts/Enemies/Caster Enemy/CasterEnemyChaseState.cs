@@ -28,7 +28,7 @@ public class CasterEnemyChaseState : BaseState<CasterEnemyState>
         }
         if (enemyData.animator != null)
         {
-            enemyData.animator.SetBool("IsMoving", true);
+            enemyData.animator.SetTrigger("Move");
         }
         pathUpdateTimer = 0f;
         UpdateChaseTarget();

@@ -9,11 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a09496d392affee439944388ba4aa61e, type: 3}
+  m_Script: {fileID: 11500000, guid: 986e830b2436405e9f4de57b02125b5d, type: 3}
   m_Name: Wave 1
   m_EditorClassIdentifier: 
   waveNumber: 1
-  permittedEnemyPrefabs:
-  - {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-  totalEnemies: 3
-  spawnInterval: 25
+  enemies:
+  - enemyPrefab: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+    count: 3
+  warmupTime: 5
+  spawnInterval: 2

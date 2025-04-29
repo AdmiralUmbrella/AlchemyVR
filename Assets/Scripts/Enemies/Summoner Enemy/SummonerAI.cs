@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class SummonerAI : StateManager<SummonerState>, IEnemy
@@ -13,6 +15,9 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
     public event Action<SummonerAI> OnEnemyDestroyed;
     private void Awake()
     {
+        // Buscar y ordenar los waypoints al iniciar
+        FindAndSortWaypointsByTag("Waypoint");
+        
         // Configurar NavMeshAgent
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent != null)
@@ -160,6 +165,46 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
         summonerData.summonedEnemies.Clear();
         Debug.Log("¡Se han destruido todos los enemigos invocados!");
     }
+    
+    /// <summary>
+    /// Busca todos los objetos con 'tagName' y los ordena según el número al final
+    /// de su nombre, por ejemplo "Waypoint (1)", "Waypoint (2)", etc.
+    /// </summary>
+    private void FindAndSortWaypointsByTag(string tagName)
+    {
+        // Buscar todos los objetos con ese tag
+        GameObject[] waypointsObjs = GameObject.FindGameObjectsWithTag(tagName);
+
+        // Crear un patrón para extraer el número entre paréntesis al final
+        // Ejemplo: "Waypoint (2)" -> extraemos '2'
+        Regex regex = new Regex(@"\((\d+)\)$");
+
+        // Ordenar usando una expresión LINQ
+        var sortedWaypoints = waypointsObjs.OrderBy(obj =>
+        {
+            // Intentar extraer el número de su nombre
+            // Si no se encuentra, poner un valor muy alto para que vaya al final
+            Match match = regex.Match(obj.name);
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+            else
+            {
+                return int.MaxValue; 
+            }
+        });
+
+        // Guardar en la lista de waypoints del SummonerData como Transforms
+        summonerData.waypoints = sortedWaypoints
+            .Select(obj => obj.transform)
+            .ToArray();
+
+        // (Opcional) Resetear el índice a 0
+        summonerData.currentWaypointIndex = 0;
+
+        Debug.Log($"Waypoints encontrados y ordenados: {summonerData.waypoints.Length}");
+    }
 
     #endregion
 
@@ -244,6 +289,7 @@ public class SummonerAI : StateManager<SummonerState>, IEnemy
     {
         OnEnemyDestroyed?.Invoke(this);
     }
+    
     
     #region Visualización con Gizmos
 
