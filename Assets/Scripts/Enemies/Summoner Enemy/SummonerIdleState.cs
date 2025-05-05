@@ -21,7 +21,7 @@ public class SummonerIdleState : BaseState<SummonerState>
             manager.StopAgent();
             if (summonerData.animator != null)
             {
-                summonerData.animator.SetBool("IsMoving", false);
+                summonerData.animator.SetTrigger("Idle");
             }
             checkTimer = 0f;
             nextState = SummonerState.Idle;

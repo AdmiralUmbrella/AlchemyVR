@@ -23,7 +23,7 @@ public class SummonerChaseState : BaseState<SummonerState>
             pathUpdateTimer = 0f;
             if (summonerData.animator != null)
             {
-                summonerData.animator.SetBool("IsMoving", true);
+                summonerData.animator.SetTrigger("Move");
             }
             UpdateChasePath();
             nextState = SummonerState.Chase;
@@ -63,7 +63,7 @@ public class SummonerChaseState : BaseState<SummonerState>
             Debug.Log("Summoner saliendo de estado: CHASE");
             if (summonerData.animator != null)
             {
-                summonerData.animator.SetBool("IsMoving", false);
+                summonerData.animator.ResetTrigger("Move");
             }
         }
 

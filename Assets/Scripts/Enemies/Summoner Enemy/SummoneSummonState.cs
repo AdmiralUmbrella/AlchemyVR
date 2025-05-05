@@ -4,7 +4,7 @@ public class SummonerSummonState : BaseState<SummonerState>
 {
     private SummonerAI manager;
     private SummonerData summonerData;
-    private float animationDuration = 2f;
+    private float animationDuration = 2.7f;
     private float currentTime;
     private bool hasInvokedThisCycle;
     private SummonerState nextState;
@@ -59,7 +59,7 @@ public class SummonerSummonState : BaseState<SummonerState>
             }
             else
             {
-                nextState = (dist < summonerData.stopChaseDistance) ? SummonerState.Chase : SummonerState.Idle;
+                nextState = (dist < summonerData.stopChaseDistance) ? SummonerState.Patrol : SummonerState.Idle;
             }
         }
     }
@@ -67,6 +67,7 @@ public class SummonerSummonState : BaseState<SummonerState>
     public override void ExitState()
     {
         Debug.Log("Summoner saliendo de estado: SUMMON (Invocación)");
+        summonerData.animator.ResetTrigger("Summon");
     }
 
     public override SummonerState GetNextState()

@@ -24,8 +24,6 @@ public class SummonerHitState : BaseState<SummonerState>
             if (summonerData.animator != null)
             {
                 summonerData.animator.ResetTrigger("Summon");
-                summonerData.animator.SetBool("IsMoving", false);
-                summonerData.animator.SetTrigger("Hit");
             }
             nextState = SummonerState.Hit;
         }

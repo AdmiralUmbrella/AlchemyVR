@@ -3,14 +3,17 @@ using UnityEngine;
 public class Flask : MonoBehaviour
 {
     [Header("Liquid Settings")]
-    [SerializeField] private int liquidMaterialIndex = 2; // Índice del material del líquido
+    [SerializeField] private int liquidMaterialIndex = 2; // ï¿½ndice del material del lï¿½quido
 
-    private Material liquidMaterialInstance; // Instancia única del material del líquido
+    private Material liquidMaterialInstance; // Instancia ï¿½nica del material del lï¿½quido
     private Renderer flaskRenderer;
 
 
     [Header("Settings")]
     [SerializeField] private bool isRoundFlask; // Definido en el Inspector
+    
+    [Header("AoE Settings")]
+    [SerializeField] private GameObject aoeAreaPrefab; // Nuevo
 
     [Header("Explosion Settings")]
     [SerializeField] private GameObject explosionEffectPrefab;
@@ -31,13 +34,13 @@ public class Flask : MonoBehaviour
     public void InitializeFlask(EssenceSO essence)
     {
         currentEssence = essence;
-        UpdateLiquidColor(); // Cambiar color según la esencia
+        UpdateLiquidColor(); // Cambiar color segï¿½n la esencia
     }
     private void InitializeLiquidMaterial()
     {
         if (flaskRenderer == null || liquidMaterialIndex >= flaskRenderer.materials.Length) return;
 
-        // Crear instancia única del material del líquido
+        // Crear instancia ï¿½nica del material del lï¿½quido
         liquidMaterialInstance = new Material(flaskRenderer.materials[liquidMaterialIndex]);
         Material[] materials = flaskRenderer.materials;
         materials[liquidMaterialIndex] = liquidMaterialInstance;
@@ -50,7 +53,7 @@ public class Flask : MonoBehaviour
         // Modificar las propiedades del Shader Graph
         liquidMaterialInstance.SetColor("_FrontColor", currentEssence.essenceColor );    
         liquidMaterialInstance.SetColor("_BackColor", currentEssence.essenceColor * 0.8f); // Oscurecer para contraste
-        liquidMaterialInstance.SetColor("_FresnelColor", currentEssence.essenceColor); // Cambiar el daño base
+        liquidMaterialInstance.SetColor("_FresnelColor", currentEssence.essenceColor); // Cambiar el daï¿½o base
     }
     // Al colisionar
     private void OnCollisionEnter(Collision collision)
@@ -60,7 +63,7 @@ public class Flask : MonoBehaviour
             return;
         }
 
-        // Se chequea si colisionó con algún enemigo que implemente IEnemy.
+        // Se chequea si colisionï¿½ con algï¿½n enemigo que implemente IEnemy.
         IEnemy enemyManager = collision.gameObject.GetComponent<IEnemy>();
         if (enemyManager != null && isRoundFlask)
         { 
@@ -75,7 +78,18 @@ public class Flask : MonoBehaviour
             currentEssence.roundFlaskEffect :
             currentEssence.squareFlaskEffect;
         Instantiate(effectPrefab, transform.position, Quaternion.identity);
-        
+
+       // if (collision.gameObject.CompareTag("Ground"))*/
+       // {
+            // --- NUEVO: instanciar Ã¡rea de efecto si NO es redondo ----
+            if (!isRoundFlask && aoeAreaPrefab != null)
+            {
+                GameObject areaObj = Instantiate(aoeAreaPrefab, transform.position, Quaternion.identity);
+                AoEArea area = areaObj.GetComponent<AoEArea>();
+                if (area != null) area.essence = currentEssence;
+            }
+        //}
+
         //Destruir objeto
         Destroy(gameObject);
     }

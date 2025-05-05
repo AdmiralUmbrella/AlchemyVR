@@ -21,7 +21,7 @@ public class SummonerPatrolState : BaseState<SummonerState>
         manager.ResumeAgent(); // Aseguramos que el NavMeshAgent pueda moverse
         if (summonerData.animator != null)
         {
-            summonerData.animator.SetBool("IsMoving", true);
+            summonerData.animator.SetTrigger("Move");
         }
 
         pathUpdateTimer = 0f;
@@ -57,7 +57,7 @@ public class SummonerPatrolState : BaseState<SummonerState>
         Debug.Log("Summoner saliendo de estado: PATROL");
         if (summonerData.animator != null)
         {
-            summonerData.animator.SetBool("IsMoving", false);
+            summonerData.animator.ResetTrigger("Move");
         }
     }
 
