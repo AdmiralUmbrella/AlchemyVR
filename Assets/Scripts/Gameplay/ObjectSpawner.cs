@@ -1,62 +1,85 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UI;   // <-- UI
 
 public class ObjectSpawner : MonoBehaviour
 {
-    [Header("Configuración del Spawner")]
-    [Tooltip("Prefab de la esencia a spawnear")]
-    public GameObject objectPrefab;
+    [Header("Spawner")]
+    [Tooltip("Prefab del objeto a spawnear")]
+    [SerializeField] private GameObject objectPrefab;
 
-    [Tooltip("Tiempo de cooldown (en segundos) antes de respawnear la esencia")]
-    public float cooldownTime = 10f;
+    [Tooltip("Tiempo de cooldown (s) antes de volver a spawnear")]
+    [SerializeField] private float cooldownTime = 10f;
 
-    [Tooltip("Transform de referencia para el spawn. Si no se asigna, se usa la posición y rotación del objeto con este script")]
-    public Transform spawnPoint;
+    [Tooltip("Máx. veces que puede generar objetos")]
+    [SerializeField] private int maxSpawnCount = 3;
 
-    [Header("Parent Container")]
-    [Tooltip("Donde queremos que queden parentadas las esencias. Por ejemplo el interior de la torre.")]
-    public Transform spawnParent;
+    [Tooltip("Punto exacto donde aparece el objeto (opcional)")]
+    [SerializeField] private Transform spawnPoint;
+
+    [Header("UI")]
+    [Tooltip("Imagen con tipo 'Filled' que actúa como barra de progreso")]
+    [SerializeField] private Image cooldownUIImage;
 
     private GameObject currentObject;
+    private int spawnCount = 0;
     private bool isCooldown = false;
 
-    void Start()
+    private void Start()
     {
-        // Si no se asigna un punto de spawn, usar este mismo objeto
-        if (spawnPoint == null)
-            spawnPoint = transform;
+        if (spawnPoint == null) spawnPoint = transform;
+        SpawnObject();
 
-        // Si no se asigna un parent, usar el mismo spawnPoint
-        if (spawnParent == null)
-            spawnParent = spawnPoint;
-
-        SpawnEssence();
+        if (cooldownUIImage != null)
+            cooldownUIImage.gameObject.SetActive(false);
     }
 
-    void Update()
+    // Detecta cuando el objeto abandonó el área del spawner
+    private void OnTriggerExit(Collider other)
     {
-        if (currentObject == null && !isCooldown)
+        if (other.gameObject == currentObject && !isCooldown && spawnCount < maxSpawnCount)
         {
             StartCoroutine(SpawnCooldown());
         }
     }
 
-    IEnumerator SpawnCooldown()
+    // Corrutina de cooldown con relleno de la imagen
+    private IEnumerator SpawnCooldown()
     {
         isCooldown = true;
-        yield return new WaitForSeconds(cooldownTime);
-        SpawnEssence();
+
+        // Mostrar UI y reiniciar fill
+        if (cooldownUIImage != null)
+        {
+            cooldownUIImage.gameObject.SetActive(true);
+            cooldownUIImage.fillAmount = 0f;
+        }
+
+        float timer = 0f;
+        while (timer < cooldownTime)
+        {
+            timer += Time.deltaTime;
+
+            if (cooldownUIImage != null)
+                cooldownUIImage.fillAmount = timer / cooldownTime; // 0‑1
+
+            yield return null;
+        }
+
+        // Ocultar la UI cuando termine
+        if (cooldownUIImage != null)
+            cooldownUIImage.gameObject.SetActive(false);
+
+        SpawnObject();
         isCooldown = false;
     }
 
-    void SpawnEssence()
+    // Instancia el prefab si no se superó el límite
+    private void SpawnObject()
     {
-        currentObject = Instantiate(
-            objectPrefab,
-            spawnPoint.position,
-            spawnPoint.rotation,
-            spawnParent
-        );
+        if (spawnCount >= maxSpawnCount) return;
+
+        currentObject = Instantiate(objectPrefab, spawnPoint.position, spawnPoint.rotation);
+        spawnCount++;
     }
 }
