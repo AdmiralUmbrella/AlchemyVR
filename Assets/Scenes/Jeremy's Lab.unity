@@ -1761,11 +1761,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &899080221 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2295137023587049108, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
-  m_PrefabInstance: {fileID: 2053475321}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &963899733 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2556925398228119303, guid: ec095f401c0446441a1dab727f27edbe, type: 3}
@@ -4152,10 +4147,6 @@ PrefabInstance:
       propertyPath: emptySlotSprite
       value: 
       objectReference: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
-    - target: {fileID: 4753436570257005789, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
-      propertyPath: particlesSpawnPoint
-      value: 
-      objectReference: {fileID: 899080221}
     - target: {fileID: 4753436570257005789, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: ingredientSlots.Array.size
       value: 3
