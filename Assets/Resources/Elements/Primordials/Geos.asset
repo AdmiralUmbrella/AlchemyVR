@@ -15,6 +15,7 @@ MonoBehaviour:
   essenceName: Geos
   essenceColor: {r: 0.7490196, g: 0.54901963, b: 0.24705884, a: 1}
   baseDamage: 10
+  essenceIcon: {fileID: 21300000, guid: fab36eae2076dde41b9820a182cfbaf6, type: 3}
   effectsToApply:
   - {fileID: 11400000, guid: f2bca64f4aae1bb409f262c361d531b1, type: 2}
   roundFlaskEffect: {fileID: 1758473627833946668, guid: 9b21333b068a5084ba09535839bee3c8, type: 3}

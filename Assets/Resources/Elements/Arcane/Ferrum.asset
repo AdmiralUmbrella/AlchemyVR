@@ -15,5 +15,7 @@ MonoBehaviour:
   essenceName: Ferrum
   essenceColor: {r: 0.427451, g: 0.44705886, b: 0.4431373, a: 1}
   baseDamage: 10
+  essenceIcon: {fileID: 21300000, guid: 4303f98915436ec4395d334ae6d43f19, type: 3}
+  effectsToApply: []
   roundFlaskEffect: {fileID: 0}
   squareFlaskEffect: {fileID: 0}
