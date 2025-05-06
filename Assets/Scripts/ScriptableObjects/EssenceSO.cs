@@ -8,6 +8,10 @@ public class EssenceSO : ScriptableObject
     public Color essenceColor = Color.white;
     public float baseDamage = 10f;
 
+    [Header("UI Elements")]
+    [Tooltip("Icono para representar la esencia en la interfaz")]
+    public Sprite essenceIcon; // <-- Nueva propiedad para la imagen
+
     [Header("Effect List")]
     public PotionEffectSO[] effectsToApply; // <-- Aquí se ponen la lista de efectos que queramos en la poción resultante.
 
