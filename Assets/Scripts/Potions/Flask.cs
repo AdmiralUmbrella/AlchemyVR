@@ -79,16 +79,19 @@ public class Flask : MonoBehaviour
             currentEssence.squareFlaskEffect;
         Instantiate(effectPrefab, transform.position, Quaternion.identity);
 
-       // if (collision.gameObject.CompareTag("Ground"))*/
-       // {
-            // --- NUEVO: instanciar área de efecto si NO es redondo ----
-            if (!isRoundFlask && aoeAreaPrefab != null)
-            {
-                GameObject areaObj = Instantiate(aoeAreaPrefab, transform.position, Quaternion.identity);
-                AoEArea area = areaObj.GetComponent<AoEArea>();
-                if (area != null) area.essence = currentEssence;
-            }
-        //}
+        if (!isRoundFlask && aoeAreaPrefab)
+        {
+            // Lanzamos un raycast corto hacia abajo desde el punto de impacto
+            RaycastHit hit;
+            Vector3 origin = transform.position;
+            if (Physics.Raycast(origin, Vector3.down, out hit, 2f, 7))
+                origin = hit.point;
+
+            GameObject areaObj = Instantiate(aoeAreaPrefab, origin, Quaternion.identity);
+
+            if (areaObj.TryGetComponent(out AoEArea area))
+                area.essence = currentEssence;
+        }
 
         //Destruir objeto
         Destroy(gameObject);

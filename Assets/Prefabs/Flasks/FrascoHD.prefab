@@ -164,6 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liquidMaterialIndex: 2
   isRoundFlask: 1
+  aoeAreaPrefab: {fileID: 0}
   explosionEffectPrefab: {fileID: 0}
   currentEssence: {fileID: 0}
 --- !u!114 &1939316145341056067
@@ -268,11 +269,11 @@ MonoBehaviour:
   m_AngularVelocityDamping: 1
   m_AngularVelocityScale: 1
   m_TrackPosition: 1
-  m_SmoothPosition: 0
+  m_SmoothPosition: 1
   m_SmoothPositionAmount: 8
   m_TightenPosition: 0.1
   m_TrackRotation: 1
-  m_SmoothRotation: 0
+  m_SmoothRotation: 1
   m_SmoothRotationAmount: 8
   m_TightenRotation: 0.1
   m_TrackScale: 1
