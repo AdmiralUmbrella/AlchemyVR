@@ -115,7 +115,10 @@ public class MeleeEnemyData
 
     [Tooltip("Si al terminar la animación de muerte se destruye el GameObject del enemigo.")]
     public bool shouldDestroyOnDeath = true;
-
+    
+    [Tooltip("GameObject que contiene el VFX de muerte del enemigo.")]
+    public GameObject deathVFX;
+    
     [HideInInspector] public float currentDeathTime;
     [HideInInspector] public bool isDead = false;
 

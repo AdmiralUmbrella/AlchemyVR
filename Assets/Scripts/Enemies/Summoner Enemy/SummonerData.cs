@@ -94,6 +94,9 @@ public class SummonerData
 
     [Tooltip("Si al terminar la animación de muerte se destruye el GameObject.")]
     public bool shouldDestroyOnDeath = true;
+    
+    [Tooltip("GameObject que contiene el VFX de muerte del enemigo.")]
+    public GameObject deathVFX;
 
     [HideInInspector] public bool isDead = false;
     [HideInInspector] public float currentDeathTime;

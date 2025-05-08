@@ -23,7 +23,8 @@ public class SummonerDeadState : BaseState<SummonerState>
             {
                 summonerData.animator.ResetTrigger("Summon");
                 summonerData.animator.SetBool("IsMoving", false);
-                summonerData.animator.SetTrigger("Dead");
+                summonerData.modelRoot.SetActive(false);
+                summonerData.deathVFX.SetActive(true);
             }
             nextState = SummonerState.Dead;
         }

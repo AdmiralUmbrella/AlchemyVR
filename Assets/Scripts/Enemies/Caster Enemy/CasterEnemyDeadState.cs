@@ -23,18 +23,9 @@ public class CasterEnemyDeadState : BaseState<CasterEnemyState>
         Debug.Log("CasterEnemy entró en estado: DEAD");
         enemyData.isDead = true;
         manager.NotifyEnemyDead(); 
-
-        // Desactivar el agente de movimiento
-        if (enemyData.agent != null)
-        {
-            enemyData.agent.enabled = false;
-        }
         
-        // Activar la animación de muerte
-        if (enemyData.animator != null)
-        {
-            enemyData.animator.SetTrigger("Dead");
-        }
+        enemyData.modelRoot.SetActive(false);
+        enemyData.deathVFX.SetActive(true);
 
         // Reiniciar el contador si se va a destruir el GameObject
         if (enemyData.shouldDestroyOnDeath)

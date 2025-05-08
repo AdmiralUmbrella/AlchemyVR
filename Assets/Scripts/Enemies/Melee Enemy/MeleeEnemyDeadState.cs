@@ -24,7 +24,8 @@ public class MeleeEnemyDeadState : BaseState<MeleeEnemyStates>
         {
             enemyData.animator.ResetTrigger("Attack");
             enemyData.animator.SetBool("IsMoving", false);
-            enemyData.animator.SetTrigger("Dead");
+            enemyData.modelRoot.SetActive(false);
+            enemyData.deathVFX.SetActive(true);
         }
         // Aqu� podr�as notificar a otros sistemas (por ejemplo, conteo de kills)
     }

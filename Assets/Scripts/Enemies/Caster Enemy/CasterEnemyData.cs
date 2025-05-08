@@ -38,6 +38,9 @@ public class CasterEnemyData
     [Tooltip("Si es true, el enemigo se destruye automáticamente tras la animación de muerte.")]
     public bool shouldDestroyOnDeath = true;
     
+    [Tooltip("GameObject que contiene el VFX de muerte del enemigo.")]
+    public GameObject deathVFX;
+    
     // Tiempo interno para el conteo regresivo
     [HideInInspector]
     public float currentDeathTime;

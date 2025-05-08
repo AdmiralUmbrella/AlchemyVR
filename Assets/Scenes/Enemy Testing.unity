@@ -565,15 +565,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalScale.x
-      value: 195.8
+      value: 285.3
       objectReference: {fileID: 0}
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalScale.y
-      value: 195.8
+      value: 285.3
       objectReference: {fileID: 0}
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalScale.z
-      value: 195.8
+      value: 285.3
       objectReference: {fileID: 0}
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalPosition.x
@@ -581,7 +581,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.07
+      value: 0.035
       objectReference: {fileID: 0}
     - target: {fileID: 4088244248618992162, guid: 6cc223ab3b338444f98227eff69082df, type: 3}
       propertyPath: m_LocalPosition.z
@@ -608,6 +608,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1955679400052996105, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: m_Name
       value: Melee enemy (1)
@@ -619,6 +623,10 @@ PrefabInstance:
     - target: {fileID: 2505779179525480157, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: enemyData.tower
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5417048403027560124, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5530476077306736982, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: m_LocalScale.x
@@ -1096,29 +1104,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1955679400052996105, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: m_Name
       value: Melee enemy (2)
       objectReference: {fileID: 0}
-    - target: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+    - target: {fileID: 5417048403027560124, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2505779179525480157, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-      propertyPath: enemyData.tower
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5530476077306736982, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5530476077306736982, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5530476077306736982, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5530476077306736982, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
       propertyPath: m_LocalPosition.x
