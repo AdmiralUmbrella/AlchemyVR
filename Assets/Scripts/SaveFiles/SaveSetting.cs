@@ -1,45 +1,94 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
+using UnityEngine.Audio; // <-- para AudioMixer
 
 public class SaveSetting : MonoBehaviour
 {
-    private SaveData saveData = new();
-    
-    public GameObject tunnelingVignetteController;
+    [Header("Referencias de UI")] [SerializeField]
+    private GameObject tunnellingVignette;
 
-    public string saveFilePath;
-    
+    [SerializeField] private Toggle tunnelingToggle; // si antes usabas el GameObject, basta con el Toggle
+    [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider sfxSlider;
 
-    private void Start()
+    [Header("Audio")] [SerializeField] private AudioMixer mixer;
+    [SerializeField] private string musicParam = "MusicVol";
+    [SerializeField] private string sfxParam = "SFXVol";
+
+    private readonly SaveData saveData = new(); 
+
+    private string saveFilePath;
+
+    /*──────────────────────────────────────────────────────*/
+    private void Awake()
     {
-        saveFilePath = Application.persistentDataPath + "/PlayerData.json";
+        saveFilePath = Path.Combine(Application.persistentDataPath, "PlayerData.json");
+
         if (File.Exists(saveFilePath))
         {
-            string loadPlayerSetting = File.ReadAllText(saveFilePath);
-            saveData = JsonUtility.FromJson<SaveData>(loadPlayerSetting);
-            tunnelingVignetteController.SetActive(saveData.tunneling);
-            Debug.Log("Datos cargados.");
+            JsonUtility.FromJsonOverwrite(File.ReadAllText(saveFilePath), saveData);
+        }
+        else // valores por defecto si no hay archivo
+        {
+            saveData.tunneling = true;
+            saveData.musicVolume = 0.75f;
+            saveData.sfxVolume = 0.75f;
+        }
+
+        // Actualizar UI y AudioMixer con los datos cargados
+        tunnelingToggle.isOn = saveData.tunneling;
+        musicSlider.value = saveData.musicVolume;
+        sfxSlider.value = saveData.sfxVolume;
+
+        ApplyVolumes(); // envía a AudioMixer (dB)
+    }
+
+    /*──────────────────────────────────────────────────────*/
+    public void OnToggleTunneling(bool value)
+    {
+        if (value == false)
+        {
+            tunnellingVignette.SetActive(false);
+            saveData.tunneling = false;
         }
         else
         {
-            Debug.Log("No se ha encontrado el archivo de datos.");
+            tunnellingVignette.SetActive(true);
+            saveData.tunneling = true;
         }
     }
 
+    public void OnChangeMusic()
+    {
+        saveData.musicVolume = musicSlider.value;
+        SetMixer(musicParam, sfxSlider.value);
+    }
+
+    public void OnChangeSFX()
+    {
+        saveData.sfxVolume = sfxSlider.value;
+        SetMixer(sfxParam, sfxSlider.value);
+    }
+
+    /*──────────────────────────────────────────────────────*/
     public void SaveToFile()
     {
-        saveData.tunneling = tunnelingVignetteController.activeSelf;
-        
-        string savePlayerSetting = JsonUtility.ToJson(saveData);
-
-        File.WriteAllText(saveFilePath, savePlayerSetting);
-
-        Debug.Log("Datos guardados.");
-        
+        File.WriteAllText(saveFilePath, JsonUtility.ToJson(saveData));
+        Debug.Log("Datos guardados en " + saveFilePath);
     }
-    
+
+    /*──────────────────── helpers ─────────────────────────*/
+    private void ApplyVolumes()
+    {
+        SetMixer(musicParam, saveData.musicVolume);
+        SetMixer(sfxParam, saveData.sfxVolume);
+    }
+
+    /// Convierte [0-1] lineal a dB (-80 silencio, 0 máximos)
+    private void SetMixer(string param, float value)
+    {
+        float dB = Mathf.Lerp(-80f, 0f, value <= 0.01f ? 0f : value);
+        mixer.SetFloat(param, dB);
+    }
 }
