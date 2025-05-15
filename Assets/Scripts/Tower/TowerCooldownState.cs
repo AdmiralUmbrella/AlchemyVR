@@ -14,7 +14,8 @@ public class TowerCooldownState : BaseState<TowerState>
     public override void EnterState()
     {
         Debug.Log("Torre en estado COOLDOWN: recargando.");
-        towerManager.towerData.towerCrystal.SetBool("IsAttacking", false);
+        towerManager.towerData.towerCrystal.ResetTrigger("Active");
+        towerManager.towerData.towerCrystal.SetTrigger("Idle");
         cooldownTimer = towerManager.towerData.cooldownDuration;
     }
 

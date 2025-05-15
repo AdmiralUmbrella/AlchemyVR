@@ -88,7 +88,7 @@ public class ObjectSpawner : MonoBehaviour
         GameObject obj = Instantiate(
             objectPrefab,
             spawnPoint.position,
-            spawnPoint.rotation);
+            spawnPoint.rotation, transform);
 
         // Añadimos el notificador dinámicamente
         var notifier = obj.AddComponent<SpawnedNotifier>();

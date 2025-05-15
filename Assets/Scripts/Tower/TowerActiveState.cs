@@ -15,8 +15,8 @@ public class TowerActiveState : BaseState<TowerState>
     public override void EnterState()
     {
         Debug.Log("Torre en estado ACTIVE: disparando.");
-        towerManager.towerData.towerCrystal.SetBool("IsCharging", false);
-        towerManager.towerData.towerCrystal.SetBool("IsAttacking", true);
+        towerManager.towerData.towerCrystal.ResetTrigger("Idle");
+        towerManager.towerData.towerCrystal.SetTrigger("Active");
         fireTimer = towerManager.towerData.fireInterval;
         activeTimer = towerManager.towerData.activeDuration;
     }
@@ -47,28 +47,42 @@ public class TowerActiveState : BaseState<TowerState>
     private void FireAtTarget()
     {
         GameObject enemy = towerManager.GetTargetEnemy();
-        if (enemy != null && towerManager.activeEssence != null)
-        {
-            IEnemy enemyInterface = enemy.GetComponent<IEnemy>();
-            if (enemyInterface != null)
-            {
-                // Se recorren todos los efectos definidos en el EssenceSO y se aplican
-                foreach (PotionEffectSO effect in towerManager.activeEssence.effectsToApply)
-                {
-                    effect.ApplyEffect(enemyInterface, towerManager.transform.position);
-                }
+        if (enemy == null || towerManager.activeEssence == null) return;
 
-                // Instanciar el efecto de la poción (ejemplo usando 'roundFlaskEffect')
-                if (towerManager.activeEssence.roundFlaskEffect != null)
-                {
-                    UnityEngine.Object.Instantiate(towerManager.activeEssence.roundFlaskEffect,
-                        enemy.transform.position, Quaternion.identity);
-                }
+        // --- VISUAL -------------------------------------------------------
+        Vector3 hitPoint   = enemy.transform.position;
+        float   distance   = Vector3.Distance(towerManager.towerData.towerCrystal.transform.position, hitPoint);
+        float   travelTime = distance / towerManager.towerData.projectileSpeed;
 
-                Debug.Log("Disparo realizado con los efectos de: " + towerManager.activeEssence.essenceName);
-            }
-        }
+        var proj = towerManager.towerData.projectilePool.Get();
+        proj.transform.SetParent(null, true);
+        proj.transform.position = towerManager.towerData.towerCrystal.transform.position;
+        proj.Init(hitPoint,
+            towerManager.activeEssence.essenceColor,
+            towerManager.towerData.projectileSpeed,
+            towerManager.towerData.projectilePool);
+        // -----------------------------------------------------------------
+
+        towerManager.StartCoroutine(ApplyEffectsAfterDelay(enemy.GetComponent<IEnemy>(),
+            travelTime));
     }
+
+    private IEnumerator ApplyEffectsAfterDelay(IEnemy enemy, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (enemy == null) yield break;          // el enemigo pudo morir antes
+
+        foreach (PotionEffectSO effect in towerManager.activeEssence.effectsToApply)
+            effect.ApplyEffect(enemy, towerManager.transform.position);
+
+        if (towerManager.activeEssence.roundFlaskEffect != null)
+            Object.Instantiate(towerManager.activeEssence.roundFlaskEffect,
+                enemy.EnemyTransform.position, Quaternion.identity);
+
+        Debug.Log($"Disparo aplicado ({towerManager.activeEssence.essenceName})");
+    }
+
 
 
     public override void OnTriggerEnter(Collider other) { }

@@ -23,7 +23,8 @@ public class MeleeEnemyDeadState : BaseState<MeleeEnemyStates>
         if (enemyData.animator != null)
         {
             enemyData.animator.ResetTrigger("Attack");
-            enemyData.animator.SetBool("IsMoving", false);
+            enemyData.animator.ResetTrigger("Move");
+            enemyData.animator.ResetTrigger("Idle");
             enemyData.modelRoot.SetActive(false);
             enemyData.deathVFX.SetActive(true);
         }

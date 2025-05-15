@@ -7,7 +7,7 @@
 {
     protected Dictionary<EState, BaseState<EState>> States = new Dictionary<EState, BaseState<EState>>();
 
-    protected BaseState<EState> CurrentState;
+    public BaseState<EState> CurrentState;
 
     protected bool IsTransitioningState = false;
 

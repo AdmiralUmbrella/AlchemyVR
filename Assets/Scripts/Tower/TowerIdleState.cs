@@ -11,7 +11,7 @@ public class TowerIdleState : BaseState<TowerState>
 
     public override void EnterState()
     {
-        towerManager.towerData.towerCrystal.SetBool("IsCharging", false);
+        towerManager.towerData.towerCrystal.SetTrigger("Idle");
         Debug.Log("Torre en estado IDLE: esperando que se inserte una poción en el núcleo.");
     }
 

@@ -4,7 +4,7 @@ using System.Collections;
 public class TowerChargingState : BaseState<TowerState>
 {
     private TowerAI towerManager;
-    private float chargeTime = 2f;
+    private float chargeTime = 1f;
 
     public TowerChargingState(TowerAI manager) : base(TowerState.Charging)
     {
@@ -14,7 +14,7 @@ public class TowerChargingState : BaseState<TowerState>
     public override void EnterState()
     {
         Debug.Log("Torre en estado CHARGING: cargando poción.");
-        towerManager.towerData.towerCrystal.SetBool("IsCharging", true);
+        towerManager.towerData.towerCrystal.SetTrigger("Charging");
         towerManager.StartCoroutine(ChargeRoutine());
     }
 

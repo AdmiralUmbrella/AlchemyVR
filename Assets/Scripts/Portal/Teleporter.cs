@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 public struct Mapping {
@@ -21,6 +22,9 @@ public class Teleporter : MonoBehaviour
     
     [Header("Torres")]
     public GameObject[] towers;
+    
+    [Header("Unity Event")]
+    public UnityEvent onPlayerTeleported;  
 
     private void OnTriggerEnter(Collider other)
     {
@@ -49,6 +53,7 @@ public class Teleporter : MonoBehaviour
                     m.target.position,
                     m.target.rotation
                 );
+                onPlayerTeleported?.Invoke(); 
                 return;
             }
         }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   essenceName: Pyro
   essenceColor: {r: 0.8431373, g: 0.45882356, b: 0.12941177, a: 1}
-  baseDamage: 30
+  baseDamage: 5
   essenceIcon: {fileID: 21300000, guid: 7cc91df95d17c3d42bbe72bc78e5fce2, type: 3}
   effectsToApply:
   - {fileID: 11400000, guid: f2bca64f4aae1bb409f262c361d531b1, type: 2}

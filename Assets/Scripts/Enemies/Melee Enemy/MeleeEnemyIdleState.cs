@@ -24,7 +24,7 @@ public class MeleeEnemyIdleState : BaseState<MeleeEnemyStates>
         // Ajustar animaci�n
         if (enemyData.animator != null)
         {
-            enemyData.animator.SetBool("IsMoving", false);
+            enemyData.animator.SetTrigger("Idle");
         }
         // Reiniciar temporizador
         checkTimer = 0f;

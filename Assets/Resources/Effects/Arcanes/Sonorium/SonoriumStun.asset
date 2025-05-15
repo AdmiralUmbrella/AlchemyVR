@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1575c31e88ecea74e9825d1f4ac6b37b, type: 3}
-  m_Name: PushEffectVentus
+  m_Script: {fileID: 11500000, guid: 17629d4cea744f3fb1466056506802b3, type: 3}
+  m_Name: SonoriumStun
   m_EditorClassIdentifier: 
-  pushForce: 5
+  duration: 4

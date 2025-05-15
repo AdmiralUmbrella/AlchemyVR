@@ -16,6 +16,8 @@ MonoBehaviour:
   essenceColor: {r: 0.74509805, g: 0.12941177, b: 0.098039225, a: 1}
   baseDamage: 10
   essenceIcon: {fileID: 21300000, guid: 5a3eef68d175ac945b5012f242a6795c, type: 3}
-  effectsToApply: []
+  effectsToApply:
+  - {fileID: 11400000, guid: 182fee628d1b07443bc03ca6ddf73fa9, type: 2}
+  - {fileID: 11400000, guid: 410bb3c5a29a9a24e86d5004465319d1, type: 2}
   roundFlaskEffect: {fileID: 6455648179204778157, guid: 64c2e3a6f4900734386c3531fbd35a96, type: 3}
   squareFlaskEffect: {fileID: 5994169781622799023, guid: 3fd4f4a70252fe940aa09834467733bf, type: 3}

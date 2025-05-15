@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15f0b52d993470ba00736980fcd1ef4, type: 3}
+  m_Name: MentarisEffect
+  m_EditorClassIdentifier: 
+  totalDuration: 5
+  fleePhase: 1.5
+  fleeDistance: 6
+  wanderRadius: 4
+  wanderInterval: 0.6

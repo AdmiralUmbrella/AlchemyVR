@@ -15,8 +15,10 @@ public class TowerDestroyedState : BaseState<TowerState>
     public override void EnterState()
     {
         Debug.Log("Torre en estado DESTROYED: reproduciendo animación de destrucción.");
+        towerManager.towerData.towerCrystal.enabled = false;
         if (animator != null)
         {
+            animator.ResetTrigger("Idle");
             animator.SetTrigger("Destroyed");
         }
         towerManager.StartCoroutine(DestroyTowerAfterDelay());
@@ -24,7 +26,7 @@ public class TowerDestroyedState : BaseState<TowerState>
 
     private IEnumerator DestroyTowerAfterDelay()
     {
-        yield return new WaitForSeconds(3f); // Ajusta el delay según la duración de la animación
+        yield return new WaitForSeconds(2f); // Ajusta el delay según la duración de la animación
         GameObject.Destroy(towerManager.transform.parent.gameObject);
     }
 

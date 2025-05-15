@@ -28,4 +28,9 @@ public class TowerData
     [Tooltip("Referencia al Animator que controla las animaciones específicas de la torre (cada torre tiene su propio Animator).")]
     public Animator towerAnimator;
     public Animator towerCrystal;
+    
+    [Header("Visual Projectile")]
+    public ProjectilePool projectilePool;   // arrástralo en el inspector
+    public float projectileSpeed = 10f;     // editable por torre
+
 }

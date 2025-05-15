@@ -25,7 +25,6 @@ public class CasterEnemyHitState : BaseState<CasterEnemyState>
         if (enemyData.agent != null)
         {
             enemyData.agent.isStopped = true;
-            enemyData.agent.velocity = Vector3.zero;
         }
     }
 

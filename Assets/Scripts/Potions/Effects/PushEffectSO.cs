@@ -8,11 +8,6 @@ public class PushEffectSO : PotionEffectSO
 
     public override void ApplyEffect(IEnemy enemy, Vector3 hitPosition)
     {
-        // Se fuerza el cambio a estado HIT (o similar)
-        // El valor pasado dependerá de la implementación interna de cada enemy;
-        // por ejemplo, para un MeleeEnemy podrías pasar MeleeEnemyStates.Hit.
-        enemy.ChangeState("Hit"); // Se puede utilizar un identificador o un valor concreto según la implementación.
-
         // Para aplicar fuerza, se necesita acceder al Rigidbody. Suponiendo que el enemy es también un MonoBehaviour:
         MonoBehaviour enemyMb = enemy as MonoBehaviour;
         if (enemyMb == null)

@@ -25,7 +25,8 @@ public class MeleeEnemyPatrolState : BaseState<MeleeEnemyStates>
         }
         if (enemyData.animator != null)
         {
-            enemyData.animator.SetBool("IsMoving", true);
+            enemyData.animator.ResetTrigger("Idle");
+            enemyData.animator.SetTrigger("Move");
         }
         // Fijamos el primer destino
         SetNextWaypointDestination();
