@@ -74,7 +74,7 @@ MonoBehaviour:
     waypointArriveThreshold: 1
     isAttacking: 0
     attackDamage: 1
-    attackDuration: 1
+    attackDuration: 1.5
     damageDelay: 0.5
     attackCooldown: 2
     currentAttackTime: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
     isStunned: 0
     deathDuration: 1
     shouldDestroyOnDeath: 1
+    deathVFX: {fileID: 0}
     currentDeathTime: 0
     isDead: 0
     pyroResistance: 0

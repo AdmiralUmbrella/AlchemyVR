@@ -76,7 +76,7 @@ MonoBehaviour:
     waypointArriveThreshold: 1
     isAttacking: 0
     attackDamage: 1
-    attackDuration: 1
+    attackDuration: 1.5
     damageDelay: 0.5
     attackCooldown: 2
     currentAttackTime: 0

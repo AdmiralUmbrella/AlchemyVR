@@ -1,4 +1,5 @@
-﻿    using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,6 +15,11 @@ public class TowerAI : StateManager<TowerState>
     
     [Tooltip("Referencia al transform que representa el núcleo de la torre (punto desde el cual se aplican los efectos/disparo).")]
     public Transform corePosition;
+
+    // ──────────────────────────────────────────────────────────────
+    // NUEVO: evento que notifica el estado de la vida (0-1)
+    public event Action<float> OnHealthChanged;
+    // ──────────────────────────────────────────────────────────────
 
     private void Awake()
     {
@@ -33,6 +39,10 @@ public class TowerAI : StateManager<TowerState>
 
         // Estado inicial: esperando la poción
         CurrentState = States[TowerState.Idle];
+
+        // Lanza el evento para que las UIs arranquen con el valor correcto
+        float initNormalized = (float)towerData.currentHealth / towerData.maxHealth;
+        OnHealthChanged?.Invoke(initNormalized);
     }
 
     /// <summary>
@@ -73,19 +83,18 @@ public class TowerAI : StateManager<TowerState>
         return closestEnemy;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     /// <summary>
     /// Resta daño a la torre. Si la vida llega a 0 o menos, transita al estado Destroyed.
     /// </summary>
     public void TakeDamage(int damage)
     {
         towerData.currentHealth -= damage;
-        // Notificar al UI que se debe actualizar la barra de vida
-        TowerHealthUI uiComponent = GetComponent<TowerHealthUI>();
-        if (uiComponent != null)
-        {
-            uiComponent.UpdateHealthBar();
-        }
-        
+
+        // Notificar a TODAS las UIs registradas
+        float normalized = Mathf.Clamp01((float)towerData.currentHealth / towerData.maxHealth);
+        OnHealthChanged?.Invoke(normalized);
+
         if (towerData.currentHealth <= 0)
         {
             Debug.Log("La torre ha sido destruida");
