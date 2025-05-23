@@ -16,7 +16,7 @@ public class TowerCoreReceiver : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Potion")) return;
+        if (!other.CompareTag("RoundPotion")) return;
 
         // Intentamos obtener la esencia de la poción
         if (other.TryGetComponent(out Flask flask) && flask.currentEssence != null)

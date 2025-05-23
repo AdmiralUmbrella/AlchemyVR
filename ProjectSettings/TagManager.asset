@@ -8,8 +8,9 @@ TagManager:
   - Ground
   - FxTemporaire
   - Tower
-  - Potion
   - Waypoint
+  - RoundPotion
+  - SquarePotion
   layers:
   - Default
   - TransparentFX

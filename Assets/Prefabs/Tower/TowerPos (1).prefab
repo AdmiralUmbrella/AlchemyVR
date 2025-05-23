@@ -611,7 +611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerData:
-    maxHealth: 100
+    maxHealth: 500
     currentHealth: 0
     fireInterval: 2
     activeDuration: 30
