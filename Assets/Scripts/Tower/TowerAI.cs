@@ -46,18 +46,20 @@ public class TowerAI : StateManager<TowerState>
     }
 
     /// <summary>
-    /// Se llama cuando se inserta una poción en el transform receptor de la torre.
-    /// Se extrae el EssenceSO del Flask y se almacena como activeEssence.
+    /// Inserta la esencia procedente de una poción.
+    /// • Si la torre ya tenía otra esencia, se reemplaza.
+    /// • Se vuelve al estado Charging para reiniciar el ciclo
+    ///   (carga → activo → cooldown …) con la nueva esencia.
     /// </summary>
-    /// <param name="essence">EssenceSO obtenido del objeto de poción.</param>
     public void InsertEssence(EssenceSO essence)
     {
-        if (activeEssence == null && essence != null)
-        {
-            activeEssence = essence;
-            TransitionToState(TowerState.Charging);
-        }
+        if (essence == null || CurrentState == States[TowerState.Destroyed])
+            return;
+        
+        activeEssence = essence;
+        TransitionToState(TowerState.Charging);
     }
+
 
     /// <summary>
     /// Busca el enemigo con tag "Enemy" más cercano dentro del radio de detección.
