@@ -12,65 +12,92 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
 
     [Header("UI (opcional)")]
-    [SerializeField] private Image cooldownUIImage;   // Image tipo Filled
+    [SerializeField] private Image cooldownUIImage;
 
-    // Objetos vivos (no destruidos)
-    private readonly List<GameObject> activeObjects = new();
+    /* ---------- Estado interno ---------- */
+    private readonly List<GameObject>   activeObjects = new();
+    private readonly HashSet<GameObject>objectsInside = new();
 
-    // Objetos que siguen DENTRO del trigger
-    private readonly HashSet<GameObject> objectsInside = new();
+    private bool isCooldown   = false;
+    private bool spawnQueued  = false;   // <- NUEVO
 
-    private bool isCooldown = false;
+    // Por-objeto indicamos si YA provocó una reposición
+    private readonly Dictionary<GameObject, bool> respawnDone =
+        new();
 
-    /*---------------------- Ciclo de vida ----------------------*/
+    /*-------------- Ciclo ----------------*/
     private void Start()
     {
         if (spawnPoint == null) spawnPoint = transform;
-        SpawnOne();                     // Generamos el primero
+        SpawnOne();
     }
 
-    private void OnEnable()
+    /*-------------- Trigger --------------*/
+    private void OnTriggerStay(Collider other)
     {
-        PurgeNulls();
-        objectsInside.Clear();          // El trigger volverá a poblarla
-        isCooldown = false;
-    }
-
-    /*---------------------- TRIGGER ----------------------------*/
-    private void OnTriggerEnter(Collider other)
-    {
-        // Si pertenece a los objetos spawneados lo añadimos al set
         if (activeObjects.Contains(other.gameObject))
+        {
             objectsInside.Add(other.gameObject);
+
+            // Mientras el área NO esté vacía, cancelamos cualquier cola
+            spawnQueued = false;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!activeObjects.Contains(other.gameObject)) return;
 
-        // Sale del área: lo quitamos del set
         objectsInside.Remove(other.gameObject);
 
-        // ¿Se ha quedado la torre vacía?
+        // Si el área se quedó vacía, solicitamos respawn
+        if (objectsInside.Count == 0)
+            QueueSpawn();                       // (sin ‘force’)
+    }
+
+    /*------ Notificación de destrucción ------*/
+    public void NotifyObjectDestroyed(GameObject obj)
+    {
+        activeObjects.Remove(obj);
+        objectsInside.Remove(obj);
+
+        // Sólo reponemos si el área está vacía y hay hueco
         if (objectsInside.Count == 0 &&
-            !isCooldown &&
+            activeObjects.Count < maxSimultaneousObjects)
+        {
+            QueueSpawn(force: true);
+        }
+    }
+
+    /*------------- COLA DE RESPAWN ---------------*/
+    private void QueueSpawn(bool force = false)
+    {
+        if (isCooldown) return;                     // ya hay temporizador
+
+        bool spaceAvailable = activeObjects.Count < maxSimultaneousObjects;
+        bool areaIsEmpty    = objectsInside.Count  == 0;
+
+        if ((spaceAvailable && areaIsEmpty) || (force && areaIsEmpty))
+        {
+            spawnQueued = false;                    // se atiende ahora mismo
+            StartCoroutine(SpawnCooldown());
+        }
+        else
+        {
+            spawnQueued = true;                     // esperar a que esté libre
+        }
+    }
+    
+    /*------------- Cool-down ---------------*/
+    private void TryStartCooldown()
+    {
+        if (!isCooldown &&
             activeObjects.Count < maxSimultaneousObjects)
         {
             StartCoroutine(SpawnCooldown());
         }
     }
 
-    /*----------------- Notificación de destrucción -------------*/
-    public void NotifyObjectDestroyed(GameObject obj)
-    {
-        activeObjects.Remove(obj);
-        objectsInside.Remove(obj);   // Por si muere dentro
-
-        if (!isCooldown && activeObjects.Count < maxSimultaneousObjects)
-            StartCoroutine(SpawnCooldown());
-    }
-
-    /*------------------- Cool-down & Spawn ---------------------*/
     private IEnumerator SpawnCooldown()
     {
         isCooldown = true;
@@ -87,7 +114,6 @@ public class ObjectSpawner : MonoBehaviour
             t += Time.deltaTime;
             if (cooldownUIImage != null)
                 cooldownUIImage.fillAmount = t / cooldownTime;
-
             yield return null;
         }
 
@@ -98,9 +124,9 @@ public class ObjectSpawner : MonoBehaviour
         isCooldown = false;
     }
 
+    /*--------------- Spawn -----------------*/
     private void SpawnOne()
     {
-        PurgeNulls();
         if (activeObjects.Count >= maxSimultaneousObjects) return;
 
         GameObject obj = Instantiate(
@@ -109,14 +135,11 @@ public class ObjectSpawner : MonoBehaviour
             spawnPoint.rotation,
             transform);
 
-        // Añadimos notificador dinámicamente
         var notifier = obj.AddComponent<SpawnedNotifier>();
         notifier.Init(this);
 
         activeObjects.Add(obj);
-        objectsInside.Add(obj);   // Nace DENTRO del trigger
+        objectsInside.Add(obj);
+        respawnDone[obj] = false;   // Aún no lo hemos repuesto
     }
-
-    /*----------------اريات Utilidad --------------------------*/
-    private void PurgeNulls() => activeObjects.RemoveAll(g => g == null);
 }

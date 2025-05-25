@@ -26,7 +26,7 @@ public class Cauldron : MonoBehaviour
 
 
     [Header("UI")]
-    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private Image timerFillImage;
 
     private List<EssenceSO> currentMix = new List<EssenceSO>();
     private Coroutine currentMixRoutine;
@@ -36,7 +36,7 @@ public class Cauldron : MonoBehaviour
 
     private void Start()
     {
-        ResetUI();
+        ResetCauldron();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -76,25 +76,37 @@ public class Cauldron : MonoBehaviour
         if (currentMixRoutine != null) StopCoroutine(currentMixRoutine);
         currentMixRoutine = StartCoroutine(MixIngredients());
     }
+    
     private void UpdateIngredientIcons()
     {
         for (int i = 0; i < ingredientSlots.Length; i++)
         {
-            ingredientSlots[i].sprite = i < currentMix.Count ?
-                currentMix[i].essenceIcon :
-                emptySlotSprite;
+            bool hasEssence = i < currentMix.Count;
+            ingredientSlots[i].gameObject.SetActive(hasEssence);
+
+            if (hasEssence)
+                ingredientSlots[i].sprite = currentMix[i].essenceIcon;
         }
     }
+    
     private IEnumerator MixIngredients()
     {
-        currentTimer = mixDelay;
+        // 1) Configura la imagen y el timer
+        currentTimer = 0f;
+        timerFillImage.fillAmount = 0f;          // arranca vacío (0)
+        timerFillImage.gameObject.SetActive(true);
 
-        while (currentTimer > 0)
+        // 2) Cuenta hacia arriba hasta llegar a mixDelay
+        while (currentTimer < mixDelay)
         {
-            currentTimer -= Time.deltaTime;
-            timerText.text = Mathf.Ceil(currentTimer).ToString();
+            currentTimer += Time.deltaTime;
+            timerFillImage.fillAmount = currentTimer / mixDelay; // 0 → 1
             yield return null;
         }
+
+        // 3) Oculta o reinicia
+        timerFillImage.gameObject.SetActive(false);
+        timerFillImage.fillAmount = 0f;          // opcional: deja vacío para próxima mezcla
 
         CheckForValidRecipe();
     }
@@ -178,32 +190,42 @@ public class Cauldron : MonoBehaviour
             if (currentMix[i] != required[i]) return false;
         return true;
     }
+    
     private void UpdateResultIcon()
     {
-        if (resultingPotion != null)
-        {
-            resultSlot.sprite = resultingPotion.essenceIcon;
-            resultSlot.color = Color.white;
-        }
+        if (resultingPotion == null) return;
+
+        resultSlot.gameObject.SetActive(true);
+        resultSlot.sprite = resultingPotion.essenceIcon;
+        resultSlot.color  = Color.white;
     }
+    
     private void ResetCauldron()
     {
         currentMix.Clear();
         resultingPotion = null;
         ResetUI();
 
-        // Restaurar colores por defecto del shader
         liquidRenderer.material.SetColor("Color_F01C36BF", defaultShallowColor);
         liquidRenderer.material.SetColor("Color_7D9A58EC", defaultDeepColor);
     }
+
     private void ResetUI()
     {
-        // Limpiar todos los slots
+        // Desactiva todos los slots de ingredientes
         foreach (Image slot in ingredientSlots)
         {
             slot.sprite = emptySlotSprite;
+            slot.gameObject.SetActive(false);
         }
+
+        // Desactiva el slot de resultado
         resultSlot.sprite = emptySlotSprite;
-        resultSlot.color = new Color(1, 1, 1, 0.5f); // Hacer transparente el slot de resultado
+        resultSlot.color  = new Color(1,1,1,0.5f);
+        resultSlot.gameObject.SetActive(false);
+
+        // Timer
+        timerFillImage.fillAmount = 0f;
+        timerFillImage.gameObject.SetActive(false);
     }
 }

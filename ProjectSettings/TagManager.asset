@@ -11,6 +11,7 @@ TagManager:
   - Waypoint
   - RoundPotion
   - SquarePotion
+  - Cauldron
   layers:
   - Default
   - TransparentFX
