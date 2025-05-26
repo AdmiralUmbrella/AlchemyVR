@@ -58,7 +58,10 @@ public class Flask : MonoBehaviour
     // Al colisionar
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("RoundPotion") || collision.gameObject.CompareTag("SquarePotion") || collision.gameObject.CompareTag("Cauldron"))
+        if (collision.gameObject.CompareTag("RoundPotion") 
+            || collision.gameObject.CompareTag("SquarePotion") 
+            || collision.gameObject.CompareTag("Cauldron")
+            || collision.gameObject.CompareTag("Essence"))
         {
             return;
         }

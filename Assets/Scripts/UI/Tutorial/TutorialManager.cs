@@ -1,90 +1,95 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Video;          // <‒‒‒ nuevo
+using UnityEngine.Video;
 using TMPro;
 using UnityEngine.Events;
 
 public class TutorialManager : MonoBehaviour
 {
-    /* ──────────────────────────── UI ──────────────────────────── */
+    /* ────────────── UI ────────────── */
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI headerText;
     [SerializeField] private TextMeshProUGUI bodyText;
-    [SerializeField] private RawImage        preview;       // Muestra imagen o vídeo
+    [SerializeField] private RawImage        preview;
     [SerializeField] private Button          nextButton;
+    [SerializeField] private Button          previousButton;          // NEW
 
-    /* ───────────────────────── Datos ─────────────────────────── */
+    /* ─────────── Multimedia ───────── */
     [Header("Multimedia")]
-    [SerializeField] private VideoPlayer     videoPlayer;    // <‒‒‒ asigna el único VideoPlayer de la escena
-    [SerializeField] private RenderTexture   fallbackRT;     // Se crea al vuelo si ningún paso especifica uno
+    [SerializeField] private VideoPlayer   videoPlayer;
+    [SerializeField] private RenderTexture fallbackRT;
 
+    /* ─────────── Pasos │ Datos ─────── */
     [Header("Steps (configurar en Inspector)")]
     [SerializeField] private TutorialStep[] steps;
 
     [Header("Events")]
     public UnityEvent OnTutorialFinished;
 
-    /* ─────────────────── Estado interno ─────────────────────── */
-    private int currentStep = -1;
+    /* ─────────── Estado interno ───── */
+    private int currentStep = 0;
 
-    /* ───────────────────── Lifecycle ─────────────────────────── */
+    /* ─────────── Lifecycle ────────── */
     private void Awake()
     {
-        nextButton.onClick.AddListener(HandleNext);
+        nextButton    .onClick.AddListener(HandleNext);
+        previousButton.onClick.AddListener(HandlePrevious);          // NEW
     }
 
-    private void Start() => HandleNext();      // Arranca en el primer paso
+    private void Start()
+    {
+        ShowStep(steps[currentStep]);                                // arranca en 1er paso
+    }
 
     private void OnDestroy()
     {
-        nextButton.onClick.RemoveListener(HandleNext);
+        nextButton    .onClick.RemoveListener(HandleNext);
+        previousButton.onClick.RemoveListener(HandlePrevious);       // NEW
     }
 
-    /* ────────────────── Navegación de pasos ─────────────────── */
+    /* ───────── Navegación ─────────── */
     private void HandleNext()
     {
-        // 1) Apaga indicador del paso anterior
-        if (currentStep >= 0 && currentStep < steps.Length)
-        {
-            var prevIndicator = steps[currentStep].indicator;
-            if (prevIndicator) prevIndicator.SetActive(false);
-        }
-
-        // 2) Avanza índice
-        currentStep++;
-
-        // 3) ¿Se acabó el tutorial?
-        if (currentStep >= steps.Length)
+        if (currentStep >= steps.Length - 1)
         {
             EndTutorial();
             return;
         }
 
-        // 4) Muestra el nuevo paso
+        ToggleIndicator(currentStep, false);   // apaga indicador actual
+        currentStep++;
         ShowStep(steps[currentStep]);
     }
 
-    /* ─────────────────── Mostrar un paso ────────────────────── */
+    private void HandlePrevious()                                             // NEW
+    {
+        if (currentStep <= 0) return;
+
+        ToggleIndicator(currentStep, false);   // apaga indicador actual
+        currentStep--;
+        ShowStep(steps[currentStep]);
+    }
+
+    /* ──────── Mostrar paso ────────── */
     private void ShowStep(TutorialStep step)
     {
         /* Texto */
         headerText.text = step.header;
         bodyText.text   = step.body;
 
-        /* RenderTexture (se decide aquí para vídeo o imagen) */
+        /* RenderTexture */
         RenderTexture rt = step.renderTexture;
-
-        if (!rt)                 // Si no trae RT, usamos una genérica
+        if (!rt)
         {
             if (!fallbackRT)
                 fallbackRT = new RenderTexture(1920, 1080, 0);
             rt = fallbackRT;
         }
 
-        /* Vídeo */
+        /* Vídeo o imagen */
         if (step.videoClip)
         {
-            videoPlayer.Stop();                       // Reinicia por si acaso
+            videoPlayer.Stop();
             videoPlayer.clip          = step.videoClip;
             videoPlayer.targetTexture = rt;
             videoPlayer.Play();
@@ -92,40 +97,46 @@ public class TutorialManager : MonoBehaviour
             preview.texture = rt;
             preview.gameObject.SetActive(true);
         }
-        /* Imagen estática */
         else if (step.renderTexture)
         {
             videoPlayer.Stop();
             preview.texture = step.renderTexture;
             preview.gameObject.SetActive(true);
         }
-        /* Sin multimedia */
         else
         {
             videoPlayer.Stop();
             preview.gameObject.SetActive(false);
         }
 
-        /* Indicador de la escena */
-        if (step.indicator) step.indicator.SetActive(true);
+        /* Indicador */
+        ToggleIndicator(currentStep, true);
 
-        /* Eventos extra del paso */
+        /* Eventos del paso */
         step.onStepStart?.Invoke();
+
+        /* Actualiza estado de botones */                                   // NEW
+        previousButton.interactable = currentStep > 0;
+        nextButton    .interactable = true;    // siempre activo (puedes añadir lógica si quieres desactivarlo en el último paso)
     }
 
-    /* ─────────────────── Finalizar tutorial ─────────────────── */
+    /* ─────── Helpers ─────────────── */
+    private void ToggleIndicator(int index, bool state)
+    {
+        if (index >= 0 && index < steps.Length && steps[index].indicator)
+            steps[index].indicator.SetActive(state);
+    }
+
+    /* ─────── Finalizar ───────────── */
     private void EndTutorial()
     {
-        // Oculta UI
-        headerText.gameObject.SetActive(false);
-        bodyText .gameObject.SetActive(false);
-        preview  .gameObject.SetActive(false);
-        nextButton.gameObject.SetActive(false);
+        headerText .gameObject.SetActive(false);
+        bodyText   .gameObject.SetActive(false);
+        preview    .gameObject.SetActive(false);
+        nextButton .gameObject.SetActive(false);
+        previousButton.gameObject.SetActive(false);                      // NEW
 
-        // Detiene vídeo si hubiese
         if (videoPlayer) videoPlayer.Stop();
-
-        // Evento global
         OnTutorialFinished?.Invoke();
     }
 }

@@ -12,6 +12,7 @@ TagManager:
   - RoundPotion
   - SquarePotion
   - Cauldron
+  - Essence
   layers:
   - Default
   - TransparentFX
