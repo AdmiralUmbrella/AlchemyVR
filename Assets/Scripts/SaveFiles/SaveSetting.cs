@@ -62,7 +62,7 @@ public class SaveSetting : MonoBehaviour
     public void OnChangeMusic()
     {
         saveData.musicVolume = musicSlider.value;
-        SetMixer(musicParam, sfxSlider.value);
+        SetMixer(musicParam, musicSlider.value);
     }
 
     public void OnChangeSFX()
@@ -88,7 +88,7 @@ public class SaveSetting : MonoBehaviour
     /// Convierte [0-1] lineal a dB (-80 silencio, 0 máximos)
     private void SetMixer(string param, float value)
     {
-        float dB = Mathf.Lerp(-80f, 0f, value <= 0.01f ? 0f : value);
+        float dB = Mathf.Log10(value) * 20;
         mixer.SetFloat(param, dB);
     }
 }

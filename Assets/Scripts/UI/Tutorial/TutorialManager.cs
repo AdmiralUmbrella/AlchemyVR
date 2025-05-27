@@ -128,7 +128,7 @@ public class TutorialManager : MonoBehaviour
     }
 
     /* ─────── Finalizar ───────────── */
-    private void EndTutorial()
+    public void EndTutorial()
     {
         headerText .gameObject.SetActive(false);
         bodyText   .gameObject.SetActive(false);

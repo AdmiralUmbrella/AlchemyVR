@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData:
-    maxHealth: 100
+    maxHealth: 80
     currentHealth: 0
     moveSpeed: 3.5
     detectionRange: 20

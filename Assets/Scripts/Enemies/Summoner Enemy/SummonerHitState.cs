@@ -24,6 +24,7 @@ public class SummonerHitState : BaseState<SummonerState>
             if (summonerData.animator != null)
             {
                 summonerData.animator.ResetTrigger("Summon");
+                summonerData.animator.SetTrigger("Idle");
             }
             nextState = SummonerState.Hit;
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -22,6 +23,12 @@ public class WaveManager : StateManager<WaveManagerStates>
     [Tooltip("Extra enemies per wave beyond the last handcrafted one.")]
     public int extraEnemiesPerWave = 2;
 
+    [Header("UI")]
+    [Tooltip("Text that displays the countdown for the next wave.")]
+    public TextMeshProUGUI warmupCountdownText; 
+    public TextMeshProUGUI warmupCountdownIndicator;
+    public GameObject startNextWaveButton;
+    
 
     public static event Action<int> OnWaveStarted;
     public static event Action<int> OnWaveCompleted;
@@ -54,6 +61,13 @@ public class WaveManager : StateManager<WaveManagerStates>
     {
         CurrentWaveIndex++;
         OnWaveCompleted?.Invoke(CurrentWaveIndex + 1);
+    }
+    
+    public void SkipWarmup()
+    {
+        // Solo tiene efecto si estamos en la cuenta regresiva
+        if (CurrentState is PrepareWaveState prep)
+            prep.Skip();                          // delegamos en el estado
     }
     
     public WaveDefinition GetCurrentDefinition()

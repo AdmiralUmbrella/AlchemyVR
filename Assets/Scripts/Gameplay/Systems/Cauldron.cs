@@ -18,14 +18,18 @@ public class Cauldron : MonoBehaviour
 
     [Header("Mix Settings")]
     [SerializeField] private float mixDelay = 3f;
-
+    
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip successSound;
+    [SerializeField] private AudioClip failureSound;
+    
     [Header("UI - Mixing Icons")]
     [SerializeField] private Image[] ingredientSlots; // Slots para iconos de ingredientes
     [SerializeField] private Image resultSlot; // Slot para icono del resultado
     [SerializeField] private Sprite emptySlotSprite; // Sprite para slot vacío
-
-
-    [Header("UI")]
+    
+    [Header("UI - Timer")]
     [SerializeField] private Image timerFillImage;
 
     private List<EssenceSO> currentMix = new List<EssenceSO>();
@@ -36,6 +40,7 @@ public class Cauldron : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         ResetCauldron();
     }
     private void OnTriggerEnter(Collider other)
@@ -144,6 +149,7 @@ public class Cauldron : MonoBehaviour
             resultingPotion = currentMix[0];
             UpdateResultIcon(); // Mostrar icono resultante
             PlayEffect(successEffect);
+            audioSource.PlayOneShot(successSound);
             validRecipeFound = true;
         }
         else
@@ -155,6 +161,7 @@ public class Cauldron : MonoBehaviour
                     resultingPotion = recipe.resultingPotion;
                     UpdateResultIcon();
                     PlayEffect(successEffect);
+                    audioSource.PlayOneShot(successSound);
                     validRecipeFound = true;
                     break;
                 }
@@ -164,6 +171,7 @@ public class Cauldron : MonoBehaviour
         if (!validRecipeFound && currentMix.Count >= 2)
         {
             PlayEffect(explosionEffect);
+            audioSource.PlayOneShot(failureSound);
             ResetCauldron();
         }
     }
@@ -204,6 +212,7 @@ public class Cauldron : MonoBehaviour
     {
         currentMix.Clear();
         resultingPotion = null;
+        audioSource.clip = null;
         ResetUI();
 
         liquidRenderer.material.SetColor("Color_F01C36BF", defaultShallowColor);

@@ -77,7 +77,7 @@ MonoBehaviour:
     isAttacking: 0
     attackDamage: 1
     attackDuration: 1.5
-    damageDelay: 0.5
+    damageDelay: 1.5
     attackCooldown: 2
     currentAttackTime: 0
     attackCooldownTimer: 0

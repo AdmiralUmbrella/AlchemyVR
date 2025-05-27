@@ -26,6 +26,7 @@ public class MeleeEnemyChaseState : BaseState<MeleeEnemyStates>
         pathUpdateTimer = 0f;
         if (enemyData.animator != null)
         {
+            enemyData.animator.ResetTrigger("Attack");
             enemyData.animator.ResetTrigger("Idle");
             enemyData.animator.SetTrigger("Move");
         }

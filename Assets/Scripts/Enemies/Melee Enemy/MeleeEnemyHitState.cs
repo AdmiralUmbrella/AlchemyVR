@@ -24,6 +24,7 @@ public class MeleeEnemyHitState : BaseState<MeleeEnemyStates>
         if (enemyData.animator != null)
         {
             enemyData.animator.ResetTrigger("Attack");
+            enemyData.animator.SetTrigger("Idle");
         }
     }
 

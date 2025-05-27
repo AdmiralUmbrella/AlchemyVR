@@ -15,6 +15,6 @@ MonoBehaviour:
   waveNumber: 3
   enemies:
   - enemyPrefab: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
-    count: 5
-  warmupTime: 5
+    count: 15
+  warmupTime: 120
   spawnInterval: 2

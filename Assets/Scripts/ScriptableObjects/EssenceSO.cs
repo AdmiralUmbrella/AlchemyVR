@@ -7,7 +7,7 @@ public class EssenceSO : ScriptableObject
     public string essenceName;
     public Color essenceColor = Color.white;
     public float baseDamage = 10f;
-
+    
     [Header("UI Elements")]
     [Tooltip("Icono para representar la esencia en la interfaz")]
     public Sprite essenceIcon; // <-- Nueva propiedad para la imagen

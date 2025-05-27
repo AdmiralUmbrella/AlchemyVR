@@ -17,6 +17,8 @@ public class Flask : MonoBehaviour
 
     [Header("Explosion Settings")]
     [SerializeField] private GameObject explosionEffectPrefab;
+    [SerializeField] private AudioSource explosionAudio;
+    [SerializeField] private AudioClip impactClip;
 
     [HideInInspector]
     public EssenceSO currentEssence;
@@ -25,6 +27,7 @@ public class Flask : MonoBehaviour
 
     private void Awake()
     {
+        explosionAudio = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         flaskRenderer = GetComponent<Renderer>();
         InitializeLiquidMaterial();
@@ -70,7 +73,7 @@ public class Flask : MonoBehaviour
         {
             return;
         }
-
+        
         // Se chequea si colision� con alg�n enemigo que implemente IEnemy.
         IEnemy enemyManager = collision.gameObject.GetComponent<IEnemy>();
         if (enemyManager != null && isRoundFlask)
@@ -80,7 +83,11 @@ public class Flask : MonoBehaviour
                 effect.ApplyEffect(enemyManager, transform.position);
             }
         }
-
+        
+        //Audio
+        if (impactClip)             // 1. dispara el audio "fire-and-forget"
+            AudioSource.PlayClipAtPoint(impactClip, transform.position);
+        
         //Efecto Visual
         GameObject effectPrefab = isRoundFlask ?
             currentEssence.roundFlaskEffect :

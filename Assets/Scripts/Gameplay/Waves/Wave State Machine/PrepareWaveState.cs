@@ -6,26 +6,52 @@ public class PrepareWaveState : BaseState<WaveManagerStates>
     private readonly WaveManager mgr;
     private float timer;
 
-    public PrepareWaveState(WaveManager mgr) : base(WaveManagerStates.PrepareWave)
+    internal PrepareWaveState(WaveManager mgr) : base(WaveManagerStates.PrepareWave)
         => this.mgr = mgr;
 
     public override void EnterState()
     {
-        Debug.Log("Preparando la oleada: " + mgr.CurrentWaveIndex);
+        
+        
         timer = mgr.GetCurrentDefinition().warmupTime;
-        // Ej.: UIManager.Instance.StartCountdown(timer);
+
+        if (mgr.warmupCountdownText != null)
+        {
+            mgr.warmupCountdownText.gameObject.SetActive(true);
+            mgr.startNextWaveButton.gameObject.SetActive(true);
+            mgr.warmupCountdownIndicator.gameObject.SetActive(true);
+            mgr.warmupCountdownText.text = Mathf.CeilToInt(timer).ToString("00");
+        }
     }
 
     public override void UpdateState()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0f) mgr.TransitionToState(WaveManagerStates.Spawning);
+        timer -= Time.unscaledDeltaTime;                        // sigue contando aunque el juego esté en pausa
+        if (mgr.warmupCountdownText)
+            mgr.warmupCountdownText.text = Mathf.CeilToInt(timer).ToString("00");
+
+        if (timer <= 0f)
+            FinishCountdown();
+    }
+
+    /// <summary>Llamado desde WaveManager.SkipWarmup()</summary>
+    internal void Skip() => FinishCountdown();
+
+    private void FinishCountdown()
+    {
+        if (mgr.warmupCountdownText)
+        {
+            mgr.warmupCountdownText.gameObject.SetActive(false);
+            mgr.startNextWaveButton.gameObject.SetActive(false);           
+            mgr.warmupCountdownIndicator.gameObject.SetActive(false);
+        }
+
+        mgr.TransitionToState(WaveManagerStates.Spawning);
     }
 
     public override void ExitState() { }
-
     public override WaveManagerStates GetNextState() => WaveManagerStates.PrepareWave;
-
+    
     public override void OnTriggerEnter(Collider _) { }
     public override void OnTriggerStay(Collider _)  { }
     public override void OnTriggerExit(Collider _)  { }

@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   summonerData:
-    maxHealth: 50
+    maxHealth: 30
     currentHealth: 0
     moveSpeed: 3.5
     detectionRange: 25
