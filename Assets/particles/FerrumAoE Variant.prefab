@@ -168,6 +168,14 @@ PrefabInstance:
       propertyPath: InitialModule.startColor.minColor.r
       value: 0.8018868
       objectReference: {fileID: 0}
+    - target: {fileID: 7561101574434213560, guid: 867c572a5be680d42a042d2349f10143, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: e2753d38be3b1e244a759d997ad3784b, type: 3}
+    - target: {fileID: 7561101574434213560, guid: 867c572a5be680d42a042d2349f10143, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: e2753d38be3b1e244a759d997ad3784b, type: 3}
     - target: {fileID: 8262427872422423092, guid: 867c572a5be680d42a042d2349f10143, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
       value: 0.5
