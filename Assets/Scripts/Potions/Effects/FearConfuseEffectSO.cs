@@ -3,55 +3,64 @@ using UnityEngine.AI;
 using System.Collections;
 
 /// <summary>
-/// 1) El enemigo huye en línea recta “fleeDistance” metros desde el punto de impacto.
-/// 2) Después vaga al azar dentro de “wanderRadius” hasta agotar “totalDuration”.
+/// 1) Desactiva temporalmente la FSM del enemigo para que no interfiera.
+/// 2) Huye en línea recta “fleeDistance” metros desde el punto de impacto.
+/// 3) Después vaga al azar dentro de “wanderRadius” hasta agotar “totalDuration”.
+/// 4) Al terminar, reactiva la FSM en el último estado que tenía.
 /// </summary>
 [CreateAssetMenu(menuName = "Alchemy/Effects/FearConfuseEffect")]
-public class FearConfuseEffectSO : PotionEffectSO   // tu clase base :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+public class FearConfuseEffectSO : PotionEffectSO
 {
     [Header("Duraciones")]
-    [Tooltip("Tiempo total del efecto (fase huida + fase confusión).")]
     public float totalDuration = 5f;
-    [Tooltip("Cuánto tiempo dedica a huir antes de empezar a vagar.")]
-    public float fleePhase   = 1.5f;
+    public float fleePhase    = 1.5f;
 
     [Header("Distancias")]
-    [Tooltip("Distancia a la que intenta escapar inicialmente.")]
-    public float fleeDistance  = 6f;
-    [Tooltip("Radio en el que deambula una vez asustado.")]
-    public float wanderRadius  = 4f;
-
-    [Header("Confusión")]
-    [Tooltip("Cada cuántos segundos elige un nuevo punto aleatorio.")]
+    public float fleeDistance   = 6f;
+    public float wanderRadius   = 4f;
     public float wanderInterval = 0.6f;
 
     public override void ApplyEffect(IEnemy enemy, Vector3 hitPosition)
     {
-        // Necesitamos un MonoBehaviour para arrancar corutinas.
-        var enemyMB = enemy as MonoBehaviour;           // IEnemy → MonoBehaviour :contentReference[oaicite:2]{index=2}:contentReference[oaicite:3]{index=3}
-        if (enemyMB == null) return;
+        // Necesitamos MonoBehaviour para iniciar corrutina y desactivar la FSM
+        var mb = enemy as MonoBehaviour;
+        if (mb == null) return;
 
-        // Agente de navegación; si el enemigo no usa NavMesh, salimos.
-        var agent = enemyMB.GetComponent<NavMeshAgent>();
-        if (agent == null || !agent.isOnNavMesh) return;
+        var agent = mb.GetComponent<NavMeshAgent>();
+        if (agent == null) return;
 
-        enemyMB.StartCoroutine(FearConfuseRoutine(agent, hitPosition));
+        // Buscar cuál script de FSM tiene este enemigo y desactivarlo
+        MonoBehaviour fsm =
+            mb.GetComponent<AdvancedMeleeEnemyAI>() ??
+            (MonoBehaviour)mb.GetComponent<AdvancedCasterEnemyAI>()  ??
+            mb.GetComponent<AdvancedSummonerEnemyAI>();
+
+        if (fsm != null)
+            fsm.enabled = false;
+
+        // Arrancar flecha/confusión
+        mb.StartCoroutine(FearConfuseRoutine(agent, mb.transform, hitPosition, fsm));
     }
 
-    IEnumerator FearConfuseRoutine(NavMeshAgent agent, Vector3 origin)
+    IEnumerator FearConfuseRoutine(
+        NavMeshAgent agent,
+        Transform tr,
+        Vector3 origin,
+        MonoBehaviour fsm
+    )
     {
         float elapsed = 0f;
 
-        /* ─────────────── 1. Fase de huida ─────────────── */
-        Vector3 fleeDir = (agent.transform.position - origin).normalized;
-        if (fleeDir.sqrMagnitude < 0.01f)          // si impactó casi encima
-            fleeDir = Random.insideUnitSphere;     // huimos en dirección random
+        // ── Fase 1: Huida ──
+        Vector3 fleeDir = (tr.position - origin).normalized;
+        if (fleeDir.sqrMagnitude < 0.01f)
+            fleeDir = Vector3.back;  // fallback
 
-        Vector3 fleeTarget = agent.transform.position + fleeDir * fleeDistance;
-
-        // Aseguramos que el punto esté en NavMesh
+        Vector3 fleeTarget = tr.position + fleeDir * fleeDistance;
         if (NavMesh.SamplePosition(fleeTarget, out var hit, 2f, agent.areaMask))
             agent.SetDestination(hit.position);
+
+        agent.isStopped = false; // asegurarnos de que camine
 
         while (elapsed < fleePhase)
         {
@@ -59,28 +68,26 @@ public class FearConfuseEffectSO : PotionEffectSO   // tu clase base :contentRef
             yield return null;
         }
 
-        /* ─────────────── 2. Fase de confusión ─────────────── */
-        float confuseEnd = totalDuration;
-        while (elapsed < confuseEnd)
+        // ── Fase 2: Confusión / vagar ──
+        while (elapsed < totalDuration)
         {
-            // Elegimos un destino aleatorio dentro de wanderRadius
-            Vector3 randomDir = Random.insideUnitSphere * wanderRadius;
-            randomDir += agent.transform.position;
-
-            if (NavMesh.SamplePosition(randomDir, out var wanderHit, 2f, agent.areaMask))
+            // nuevo destino aleatorio
+            Vector3 randomPoint = tr.position + Random.insideUnitSphere * wanderRadius;
+            if (NavMesh.SamplePosition(randomPoint, out var wanderHit, 2f, agent.areaMask))
                 agent.SetDestination(wanderHit.position);
 
-            // Esperamos hasta la siguiente decisión
-            float t = 0f;
-            while (t < wanderInterval)
+            float timer = 0f;
+            while (timer < wanderInterval)
             {
-                t       += Time.deltaTime;
                 elapsed += Time.deltaTime;
-                if (elapsed >= confuseEnd) break;
+                timer  += Time.deltaTime;
                 yield return null;
             }
         }
-        
-        agent.ResetPath();
+
+        // ── Fin del efecto: reactivar la FSM ──
+        agent.isStopped = false;
+        if (fsm != null)
+            fsm.enabled = true;
     }
 }

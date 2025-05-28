@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71068f36d40d40738711326f2ca92fa3, type: 3}
   m_Name: FrostiumSlow
   m_EditorClassIdentifier: 
-  speedMultiplier: 0.3
-  duration: 3
+  speedMultiplier: 0.5
+  duration: 20

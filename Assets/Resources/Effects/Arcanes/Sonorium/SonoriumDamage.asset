@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08caf71d46869064eaded3b79dfe7d99, type: 3}
   m_Name: SonoriumDamage
   m_EditorClassIdentifier: 
-  essence: {fileID: 0}
+  essence: {fileID: 11400000, guid: e486f557e84d381419fb84dbee059af3, type: 2}

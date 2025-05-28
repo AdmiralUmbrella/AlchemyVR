@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   essenceName: Hemora
   essenceColor: {r: 0.5803922, g: 0, b: 0.1137255, a: 1}
-  baseDamage: 40
+  baseDamage: 50
   essenceIcon: {fileID: 21300000, guid: 785c043904f5c01488bfa77ba569cdcc, type: 3}
   effectsToApply:
   - {fileID: 11400000, guid: c04771562d039094492473bde708290e, type: 2}

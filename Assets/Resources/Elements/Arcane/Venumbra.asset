@@ -18,5 +18,6 @@ MonoBehaviour:
   essenceIcon: {fileID: 21300000, guid: ff550b3bc17b9d6488e2ac4a70b6bc50, type: 3}
   effectsToApply:
   - {fileID: 11400000, guid: f6e98400eee24f84aab8a3af35669d44, type: 2}
+  - {fileID: 11400000, guid: c3733f80743e16649aebd7d95c75e73a, type: 2}
   roundFlaskEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   squareFlaskEffect: {fileID: 3224707547933374841, guid: 6644ddc90b0e2c145b73727aacd13baf, type: 3}

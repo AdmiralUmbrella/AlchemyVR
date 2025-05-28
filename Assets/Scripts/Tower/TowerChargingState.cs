@@ -4,7 +4,7 @@ using System.Collections;
 public class TowerChargingState : BaseState<TowerState>
 {
     private TowerAI towerManager;
-    private float chargeTime = 1f;
+    private float chargeTime = 3f;
 
     public TowerChargingState(TowerAI manager) : base(TowerState.Charging)
     {

@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalDuration: 5
   fleePhase: 1.5
-  fleeDistance: 6
-  wanderRadius: 4
+  fleeDistance: 10
+  wanderRadius: 6
   wanderInterval: 0.6

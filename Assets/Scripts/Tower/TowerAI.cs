@@ -12,6 +12,7 @@ public class TowerAI : StateManager<TowerState>
     [Header("Efectos y Núcleo")]
     [Tooltip("EssenceSO activo que se obtiene de la poción insertada (a través del script Flask).")]
     public EssenceSO activeEssence;
+    public AudioSource audioSource;
     
     [Tooltip("Referencia al transform que representa el núcleo de la torre (punto desde el cual se aplican los efectos/disparo).")]
     public Transform corePosition;
@@ -85,7 +86,7 @@ public class TowerAI : StateManager<TowerState>
         return closestEnemy;
     }
 
-    // ReSharper disable Unity.PerformanceAnalysis
+
     /// <summary>
     /// Resta daño a la torre. Si la vida llega a 0 o menos, transita al estado Destroyed.
     /// </summary>

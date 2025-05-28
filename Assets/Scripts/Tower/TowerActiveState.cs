@@ -21,7 +21,9 @@ public class TowerActiveState : BaseState<TowerState>
         activeTimer = towerManager.towerData.activeDuration;
     }
 
-    public override void ExitState() { }
+    public override void ExitState()
+    {
+    }
 
     public override void UpdateState()
     {
@@ -46,13 +48,15 @@ public class TowerActiveState : BaseState<TowerState>
     /// </summary>
     private void FireAtTarget()
     {
+        towerManager.audioSource.PlayOneShot(towerManager.towerData.fireSound);
+        
         GameObject enemy = towerManager.GetTargetEnemy();
         if (enemy == null || towerManager.activeEssence == null) return;
 
         // --- VISUAL -------------------------------------------------------
-        Vector3 hitPoint   = enemy.transform.position;
-        float   distance   = Vector3.Distance(towerManager.towerData.towerCrystal.transform.position, hitPoint);
-        float   travelTime = distance / towerManager.towerData.projectileSpeed;
+        Vector3 hitPoint = enemy.transform.position;
+        float distance = Vector3.Distance(towerManager.towerData.towerCrystal.transform.position, hitPoint);
+        float travelTime = distance / towerManager.towerData.projectileSpeed;
 
         var proj = towerManager.towerData.projectilePool.Get();
         proj.transform.SetParent(null, true);
@@ -71,7 +75,7 @@ public class TowerActiveState : BaseState<TowerState>
     {
         yield return new WaitForSeconds(delay);
 
-        if (enemy == null) yield break;          // el enemigo pudo morir antes
+        if (enemy == null) yield break; // el enemigo pudo morir antes
 
         foreach (PotionEffectSO effect in towerManager.activeEssence.effectsToApply)
             effect.ApplyEffect(enemy, towerManager.transform.position);
@@ -84,8 +88,15 @@ public class TowerActiveState : BaseState<TowerState>
     }
 
 
+    public override void OnTriggerEnter(Collider other)
+    {
+    }
 
-    public override void OnTriggerEnter(Collider other) { }
-    public override void OnTriggerStay(Collider other) { }
-    public override void OnTriggerExit(Collider other) { }
+    public override void OnTriggerStay(Collider other)
+    {
+    }
+
+    public override void OnTriggerExit(Collider other)
+    {
+    }
 }

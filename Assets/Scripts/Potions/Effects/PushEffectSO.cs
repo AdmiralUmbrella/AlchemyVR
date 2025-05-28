@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.AI;
+using System.Collections; 
 
 [CreateAssetMenu(menuName = "Alchemy/Effects/PushEffect")]
 public class PushEffectSO : PotionEffectSO
@@ -6,29 +8,26 @@ public class PushEffectSO : PotionEffectSO
     [Header("Push Settings")]
     public float pushForce;
 
-    public override void ApplyEffect(IEnemy enemy, Vector3 hitPosition)
+    public override void ApplyEffect(IEnemy enemy, Vector3 hitPos)
     {
-        // Para aplicar fuerza, se necesita acceder al Rigidbody. Suponiendo que el enemy es también un MonoBehaviour:
-        MonoBehaviour enemyMb = enemy as MonoBehaviour;
-        if (enemyMb == null)
-        {
-            Debug.LogWarning("El enemy no es un MonoBehaviour. No se puede acceder al Rigidbody.");
-            return;
-        }
-        Rigidbody enemyRb = enemyMb.GetComponent<Rigidbody>();
-        if (enemyRb == null)
-        {
-            Debug.LogWarning("El enemy no tiene un Rigidbody asignado");
-            return;
-        }
+        var mb = enemy as MonoBehaviour;
+        if (mb == null) return;
+        var agent = mb.GetComponent<NavMeshAgent>();
+        if (agent == null) return;
 
-        Vector3 direction = (enemyMb.transform.position - hitPosition).normalized;
-        enemyRb.AddForce(direction * pushForce, ForceMode.Impulse);
-        /*
-        if (enemy.enemyData.agent != null) 
-        { 
-            enemy.enemyData.agent.isStopped = true;
-        }
-        */
+        mb.StartCoroutine(PushRoutine(agent, mb.transform.position, hitPos));
     }
+
+    IEnumerator PushRoutine(NavMeshAgent agent, Vector3 origin, Vector3 hitPos)
+    {
+        Vector3 dir = (origin - hitPos).normalized;
+        float t = 0f, duration = 0.2f; // breve empujón
+        while (t < duration)
+        {
+            agent.Move(dir * pushForce * Time.deltaTime);
+            t += Time.deltaTime;
+            yield return null;
+        }
+    }
+
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveNumber: 1
   enemies:
-  - enemyPrefab: {fileID: 2169598067113979176, guid: a197b360ec99bdf4a917e520441d7cd8, type: 3}
+  - enemyPrefab: {fileID: 8999430211487626816, guid: d3e5a6f59f2d1dc4c8b1b24a6031aed6, type: 3}
     count: 5
   warmupTime: 5
   spawnInterval: 2

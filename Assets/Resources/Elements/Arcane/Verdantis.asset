@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   essenceName: Verdantis
   essenceColor: {r: 0.3647059, g: 0.8745099, b: 0.5294118, a: 1}
-  baseDamage: 50
+  baseDamage: 20
   essenceIcon: {fileID: 21300000, guid: f81d39578c6eeea48b625cc017f66f88, type: 3}
   effectsToApply:
   - {fileID: 11400000, guid: 54f424e9a64aa4e46aded049b81d9b1c, type: 2}
+  - {fileID: 11400000, guid: 9b4339eee6ba63a4394815dc79124e79, type: 2}
   roundFlaskEffect: {fileID: 2353600328335836179, guid: ceec7516237b4104b94300043ca39784, type: 3}
   squareFlaskEffect: {fileID: 4772634663576830964, guid: e1385af346f4e624eb313ec1ea4fcd7e, type: 3}

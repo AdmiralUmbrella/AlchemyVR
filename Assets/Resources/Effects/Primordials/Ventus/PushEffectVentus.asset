@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1575c31e88ecea74e9825d1f4ac6b37b, type: 3}
   m_Name: PushEffectVentus
   m_EditorClassIdentifier: 
-  pushForce: 2
+  pushForce: 30

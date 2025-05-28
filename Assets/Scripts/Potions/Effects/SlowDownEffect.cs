@@ -1,41 +1,48 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;  
+using System.Collections;
+using System.Collections.Generic;
 
+/// <summary>
+/// Reduces a NavMeshAgent’s speed by a multiplier for a duration,
+/// without stacking reductions on repeated hits.
+/// </summary>
 [CreateAssetMenu(menuName = "Alchemy/Effects/SlowDownEffect")]
-public class SlowDownEffect : PotionEffectSO
+public class SlowDownEffectSO : PotionEffectSO
 {
-    [Range(0.05f, 1f)]
-    [Tooltip("Factor que se multiplica por la velocidad original (0.5 = 50 %).")]
+    [Tooltip("Factor to multiply the agent’s original speed (e.g. 0.5 = 50%)")]
     public float speedMultiplier = 0.5f;
+    [Tooltip("Duration of the slow effect")]
+    public float duration = 2f;
 
-    [Tooltip("Duración del efecto en segundos.")]
-    public float duration = 3f;
+    // Stores each agent’s original speed so we never stack multipliers
+    private static Dictionary<NavMeshAgent, float> originalSpeeds = new();
 
-    public override void ApplyEffect(IEnemy enemy, Vector3 hitPosition)
+    public override void ApplyEffect(IEnemy enemy, Vector3 hitPos)
     {
-        // ── 1) Necesitamos que realmente sea un MonoBehaviour para arrancar la corutina
-        var enemyMB = enemy as MonoBehaviour;
-        if (enemyMB == null) return;
+        var mb = enemy as MonoBehaviour;
+        if (mb == null) return;
 
-        // ── 2) Intentamos obtener el NavMeshAgent
-        var agent = enemyMB.GetComponent<NavMeshAgent>();
+        var agent = mb.GetComponent<NavMeshAgent>();
         if (agent == null) return;
 
-        // ── 3) Lanzamos la corutina; si quieres refresh, puedes detener la anterior primero
-        enemyMB.StartCoroutine(SlowRoutine(agent));
+        mb.StartCoroutine(SlowRoutine(agent));
     }
 
-    IEnumerator SlowRoutine(NavMeshAgent agent)
+    private IEnumerator SlowRoutine(NavMeshAgent agent)
     {
+        // Record original speed once
+        if (!originalSpeeds.ContainsKey(agent))
+            originalSpeeds[agent] = agent.speed;
 
-        // Aplicamos la ralentización
-        agent.speed = 3.5f * speedMultiplier;
+        // Apply slow based on original
+        agent.speed = originalSpeeds[agent] * speedMultiplier;
 
-        // Esperamos la duración configurada
         yield return new WaitForSeconds(duration);
 
-        // Restauramos la velocidad original
-        agent.speed = 3.5f;
+        // Restore original speed and clean up
+        if (originalSpeeds.TryGetValue(agent, out var original))
+            agent.speed = original;
+        originalSpeeds.Remove(agent);
     }
 }

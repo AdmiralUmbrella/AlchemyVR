@@ -14,6 +14,8 @@ public class TowerData
     [Tooltip("Intervalo de tiempo entre disparos en estado activo.")]
     public float fireInterval = 1f;
     
+    public AudioClip fireSound;
+    
     [Tooltip("Duración en segundos en que la torre permanece en estado activo (disparando).")]
     public float activeDuration = 5f;
     
