@@ -21,6 +21,9 @@ public class Cauldron : MonoBehaviour
     
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource firstIngredient;
+    [SerializeField] private AudioSource secondIngredient;
+    [SerializeField] private AudioSource thirdIngredient;
     [SerializeField] private AudioClip successSound;
     [SerializeField] private AudioClip failureSound;
     
@@ -74,6 +77,21 @@ public class Cauldron : MonoBehaviour
         if (currentMix.Count >= 3) return;
 
         currentMix.Add(essence);
+        
+        switch (currentMix.Count)
+        {
+            case 1:
+                firstIngredient.Play();
+                break;
+            case 2:
+                secondIngredient.Play();
+                break;
+            case 3:
+                thirdIngredient.Play();
+                break;
+        }
+
+        audioSource.pitch = 1f;
         UpdateLiquidColor();
         UpdateIngredientIcons(); // Actualizar UI al añadir
 
@@ -89,7 +107,7 @@ public class Cauldron : MonoBehaviour
             bool hasEssence = i < currentMix.Count;
             ingredientSlots[i].gameObject.SetActive(hasEssence);
 
-            if (hasEssence)
+            if (hasEssence) 
                 ingredientSlots[i].sprite = currentMix[i].essenceIcon;
         }
     }

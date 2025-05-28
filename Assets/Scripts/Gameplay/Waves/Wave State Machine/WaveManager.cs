@@ -6,8 +6,8 @@ using TMPro;
 using Random = UnityEngine.Random;
 
 /// <summary>
-/// Coordinates waves, communicates with UI and other systems via events.
-/// Plug a reference to an array of WaveDefinition assets in the Inspector.
+/// Coordinates waves, communicates with UI and other systems via events,
+/// and now unlocks potion recipes as the player progresses.
 /// </summary>
 public class WaveManager : StateManager<WaveManagerStates>
 {
@@ -25,10 +25,13 @@ public class WaveManager : StateManager<WaveManagerStates>
 
     [Header("UI")]
     [Tooltip("Text that displays the countdown for the next wave.")]
-    public TextMeshProUGUI warmupCountdownText; 
+    public TextMeshProUGUI warmupCountdownText;
     public TextMeshProUGUI warmupCountdownIndicator;
     public GameObject startNextWaveButton;
-    
+
+    [Header("Potion Recipes")]
+    [Tooltip("Recipe GameObjects to unlock per wave. Index 0 → Wave 1, etc.")]
+    public GameObject[] potionRecipeObjects;
 
     public static event Action<int> OnWaveStarted;
     public static event Action<int> OnWaveCompleted;
@@ -37,7 +40,6 @@ public class WaveManager : StateManager<WaveManagerStates>
     internal int CurrentWaveIndex { get; private set; } = -1;
     internal List<GameObject> aliveEnemies = new();
 
-    /* ---------- MonoBehaviour ---------- */
     protected void Start()
     {
         /* Build and register states */
@@ -47,47 +49,69 @@ public class WaveManager : StateManager<WaveManagerStates>
         States.Add(WaveManagerStates.InProgress, new InProgressState(this));
         States.Add(WaveManagerStates.Cleanup,    new CleanupState(this));
 
-        CurrentState = States[WaveManagerStates.Idle]; 
+        CurrentState = States[WaveManagerStates.Idle];
     }
 
-    /* ---------- API ---------- */
+    /// <summary>
+    /// Called by UI or game logic to begin the next wave.
+    /// </summary>
     public void StartNextWave()
     {
         CurrentWaveIndex++;
+        ActivateRecipeForWave(CurrentWaveIndex);
         OnWaveStarted?.Invoke(CurrentWaveIndex + 1);
     }
 
+    /// <summary>
+    /// Called when a wave fully completes (all enemies dead, cleanup done).
+    /// Advances the wave index so PrepareWave uses the next definition.
+    /// </summary>
     public void RaiseWaveCompleted()
     {
+        // <-- Re-add this increment so wave index advances properly
         CurrentWaveIndex++;
         OnWaveCompleted?.Invoke(CurrentWaveIndex + 1);
     }
-    
+
+    /// <summary>
+    /// Skips the warmup countdown.
+    /// </summary>
     public void SkipWarmup()
     {
-        // Solo tiene efecto si estamos en la cuenta regresiva
         if (CurrentState is PrepareWaveState prep)
-            prep.Skip();                          // delegamos en el estado
+            prep.Skip();
+        ActivateRecipeForWave(CurrentWaveIndex);
     }
-    
+
+    /// <summary>
+    /// Returns the WaveDefinition for the current wave, scaling after handcrafted waves.
+    /// </summary>
     public WaveDefinition GetCurrentDefinition()
     {
         if (CurrentWaveIndex < waves.Length)
             return waves[CurrentWaveIndex];
 
-        // Procedural wave: reuse last definition but boost numbers
+        // Procedural wave: clone last and boost counts
         WaveDefinition last = waves[^1];
-        // Create a lightweight copy in memory
         WaveDefinition copy = ScriptableObject.CreateInstance<WaveDefinition>();
-        copy.enemies     = last.enemies;
-        copy.warmupTime  = last.warmupTime;
+        copy.enemies       = last.enemies;
+        copy.warmupTime    = last.warmupTime;
         copy.spawnInterval = last.spawnInterval;
 
         int bonus = extraEnemiesPerWave * ((CurrentWaveIndex + 1) - waves.Length);
-        // Increase counts
         for (int i = 0; i < copy.enemies.Length; i++)
             copy.enemies[i].count += bonus;
 
         return copy;
+    }
+
+    /// <summary>
+    /// Activates the potion recipe object corresponding to the given wave.
+    /// </summary>
+    public void ActivateRecipeForWave(int waveIndex)
+    {
+        if (potionRecipeObjects == null) return;
+        if (waveIndex >= 0 && waveIndex < potionRecipeObjects.Length)
+            potionRecipeObjects[waveIndex].SetActive(true);
     }
 }

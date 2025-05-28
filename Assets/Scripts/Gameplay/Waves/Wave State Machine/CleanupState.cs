@@ -13,7 +13,7 @@ public class CleanupState : BaseState<WaveManagerStates>
     {
         Debug.Log("Limpiando la oleada.");
         mgr.RaiseWaveCompleted();
-        // Ej.: RewardManager.Instance.GrantLoot();
+        mgr.ActivateRecipeForWave(waveIndex: mgr.CurrentWaveIndex);
     }
 
     public override void UpdateState()
