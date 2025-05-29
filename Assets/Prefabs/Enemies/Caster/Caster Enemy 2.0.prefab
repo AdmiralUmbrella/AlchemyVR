@@ -138,7 +138,7 @@ MonoBehaviour:
   beamPoolKey: CasterBeam
   moveState: Move
   castState: CastLoop
-  maxHealth: 80
+  maxHealth: 100
   deathVFX: {fileID: 5215511400296112710}
   corpseLifeTime: 0
   canBeStunned: 1

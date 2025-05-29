@@ -1457,7 +1457,7 @@ MonoBehaviour:
   spawnOffset: 1.5
   moveState: Move
   summonState: SummonLoop
-  maxHealth: 50
+  maxHealth: 60
   deathVFX: {fileID: 9194600728777609679}
   corpseLifetime: 0
   canBeStunned: 1

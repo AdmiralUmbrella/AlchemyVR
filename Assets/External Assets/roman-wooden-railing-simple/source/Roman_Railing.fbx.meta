@@ -3,7 +3,12 @@ guid: bc39518225cccfb448128d665d13f522
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rail_Bake
+    second: {fileID: 2100000, guid: 9d97fffc193b947409567438a3d6f5a8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

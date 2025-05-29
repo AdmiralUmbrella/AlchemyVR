@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waveNumber: 10
   enemies:
+  - enemyPrefab: {fileID: 1427800942774432551, guid: b8fa9c2fc79a01144a05955b8e00f947, type: 3}
+    count: 30
   - enemyPrefab: {fileID: 8999430211487626816, guid: d3e5a6f59f2d1dc4c8b1b24a6031aed6, type: 3}
-    count: 10
-  - enemyPrefab: {fileID: 1427800942774432551, guid: b8fa9c2fc79a01144a05955b8e00f947, type: 3}
-    count: 10
-  - enemyPrefab: {fileID: 1427800942774432551, guid: b8fa9c2fc79a01144a05955b8e00f947, type: 3}
-    count: 10
+    count: 30
+  - enemyPrefab: {fileID: 8066229521711658559, guid: 3944078a47f59684aa583ab911304d1c, type: 3}
+    count: 30
   warmupTime: 120
   spawnInterval: 2

@@ -48,11 +48,11 @@ public class TowerActiveState : BaseState<TowerState>
     /// </summary>
     private void FireAtTarget()
     {
-        towerManager.audioSource.PlayOneShot(towerManager.towerData.fireSound);
-        
         GameObject enemy = towerManager.GetTargetEnemy();
         if (enemy == null || towerManager.activeEssence == null) return;
 
+        towerManager.audioSource.PlayOneShot(towerManager.towerData.fireSound);
+        
         // --- VISUAL -------------------------------------------------------
         Vector3 hitPoint = enemy.transform.position;
         float distance = Vector3.Distance(towerManager.towerData.towerCrystal.transform.position, hitPoint);

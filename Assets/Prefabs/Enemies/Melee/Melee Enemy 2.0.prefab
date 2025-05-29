@@ -1337,10 +1337,10 @@ MonoBehaviour:
   damageDelay: 1
   attackState: Attack
   moveState: Move
-  maxHealth: 100
+  maxHealth: 200
   deathVFX: {fileID: 5305603886428387645}
   corpseLifetime: 0
-  canBeStunned: 1
+  canBeStunned: 0
   stunResistance: 0
   currentHealth: 0
 --- !u!136 &3084619758479328661
