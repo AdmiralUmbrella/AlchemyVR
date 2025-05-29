@@ -23,6 +23,12 @@ public class Teleporter : MonoBehaviour
     [Header("Torres")]
     public GameObject[] towers;
     
+    [Header("Referencia al Transform del jugador")]
+    [Tooltip("Arrastra aquí el Transform del jugador en el Inspector")]
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform beltTransform;
+
+    
     [Header("Unity Event")]
     public UnityEvent onPlayerTeleported;  
 
@@ -59,5 +65,33 @@ public class Teleporter : MonoBehaviour
         }
 
         Debug.LogWarning($"{name}: no hay mapping para la textura {currentTex.name}.");
+    }
+    
+    /// <summary>
+    /// Agranda al jugador estableciendo su escala global en 2.
+    /// </summary>
+    public void EnlargePlayer()
+    {
+        if (playerTransform == null && beltTransform == null)
+        {
+            Debug.LogWarning("PlayerScaler: no se ha asignado playerTransform.");
+            return;
+        }
+        playerTransform.localScale = Vector3.one * 2f;
+        beltTransform.localScale = Vector3.one * 2f;
+    }
+
+    /// <summary>
+    /// Achica al jugador restableciendo su escala global en 1.
+    /// </summary>
+    public void ShrinkPlayer()
+    {
+        if (playerTransform == null && beltTransform == null)
+        {
+            Debug.LogWarning("PlayerScaler: no se ha asignado playerTransform.");
+            return;
+        }
+        playerTransform.localScale = Vector3.one;
+        beltTransform.localScale = Vector3.one;
     }
 }

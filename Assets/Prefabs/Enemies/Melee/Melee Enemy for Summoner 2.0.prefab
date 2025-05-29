@@ -589,6 +589,7 @@ MonoBehaviour:
   waypoints: []
   waypointTolerance: 0.3
   pathRefreshRate: 0.25
+  waypointJitter: 7
   detectionRadius: 15
   fovAngle: 110
   forgetDistance: 20
